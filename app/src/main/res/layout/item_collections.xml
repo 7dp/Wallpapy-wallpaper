@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/bb_default_elevation"
+    android:layout_marginEnd="@dimen/bb_default_elevation"
+    android:layout_marginBottom="@dimen/bb_default_elevation"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="@dimen/bb_fake_shadow_height"
+    app:cardElevation="2dp"
+    app:cardPreventCornerOverlap="false">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/frame_layout_item_collections"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height">
+
+            <ImageView
+                android:id="@+id/iv_item_collectons"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                tools:src="@color/blue50" />
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@android:dimen/app_icon_size"
+            android:layout_below="@id/frame_layout_item_collections"
+            android:minHeight="@android:dimen/app_icon_size">
+
+            <TextView
+                android:id="@+id/tv_title_item_collections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/space_item_coll"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@android:color/black"
+                tools:text="Pattern Design FenomenalFenomenal" />
+
+            <Space
+                android:id="@+id/space_item_coll"
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:layout_centerInParent="true" />
+
+            <TextView
+                android:id="@+id/tv_count_item_collections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/space_item_coll"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@android:color/black"
+                tools:text="62 Photos" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

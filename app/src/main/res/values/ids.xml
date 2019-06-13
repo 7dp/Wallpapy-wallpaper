@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="fab_show_stats" type="id" />
+    <item name="fab_show_info" type="id" />
+    <item name="fab_set_wallpaper" type="id" />
+    <item name="fab_download" type="id" />
+</resources>

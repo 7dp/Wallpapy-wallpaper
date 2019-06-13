@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+
+    <tab
+        barColorWhenSelected="@android:color/white"
+        icon="@drawable/ic_hot_24"
+        id="@+id/tab_latest"
+        title="New" />
+
+    <tab
+        barColorWhenSelected="@android:color/white"
+        icon="@drawable/ic_star_24"
+        id="@+id/tab_popular"
+        title="Featured" />
+
+    <tab
+        barColorWhenSelected="@android:color/white"
+        icon="@drawable/ic_category_24"
+        id="@+id/tab_category"
+        title="Collections" />
+
+</tabs>

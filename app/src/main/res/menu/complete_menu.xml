@@ -1,0 +1,109 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="id.radityo.wallpapy.Activities.DetailActivity">
+
+    <group android:id="@+id/new_fragment_group">
+
+        <item
+            android:id="@+id/action_search_new_featured"
+            android:icon="@drawable/ic_search_24"
+            android:title="@string/search"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/action_sort_new_featured"
+            android:icon="@drawable/ic_sort_24"
+            android:title="@string/sort_by"
+            app:showAsAction="ifRoom">
+
+            <menu>
+                <item
+                    android:id="@+id/action_sort_latest"
+                    android:title="@string/latest"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/action_sort_oldest"
+                    android:title="@string/oldest"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/action_sort_popular"
+                    android:title="@string/popular"
+                    app:showAsAction="never" />
+            </menu>
+
+        </item>
+
+    </group>
+
+    <group android:id="@+id/featured_fragment_group">
+
+        <item
+            android:id="@+id/action_search_featured_featured"
+            android:icon="@drawable/ic_search_24"
+            android:title="@string/search"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/action_sort_featured_featured"
+            android:icon="@drawable/ic_sort_24"
+            android:title="@string/sort_by"
+            app:showAsAction="ifRoom">
+
+            <menu>
+                <item
+                    android:id="@+id/action_sort_latest_featured"
+                    android:title="@string/latest"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/action_sort_oldest_featured"
+                    android:title="@string/oldest"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/action_sort_popular_featured"
+                    android:title="@string/popular"
+                    app:showAsAction="never" />
+            </menu>
+
+        </item>
+
+    </group>
+
+    <group android:id="@+id/collections_fragment_group">
+
+        <item
+            android:id="@+id/action_search_collections"
+            android:icon="@drawable/ic_search_24"
+            android:title="@string/search"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/action_sort_collections"
+            android:icon="@drawable/ic_sort_24"
+            android:title="@string/sort_by"
+            app:showAsAction="always">
+
+            <menu>
+                <item
+                    android:id="@+id/action_sort_collections_all"
+                    android:title="@string/all"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/action_sort_collections_curated"
+                    android:title="@string/curated"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/action_sort_collections_featured"
+                    android:title="@string/featuredf"
+                    app:showAsAction="never" />
+            </menu>
+
+        </item>
+
+    </group>
+
+</menu>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.MainActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <devlight.io.library.ntb.NavigationTabBar
+        android:id="@+id/nav_tab_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bb_height"
+        android:layout_gravity="bottom"
+        app:ntb_bg_color="@color/colorPrimary"
+        app:ntb_inactive_color="@android:color/white"
+        app:ntb_preview_colors="@array/nav_colors"
+        app:ntb_title_mode="all"
+        app:ntb_titled="true" />
+
+</android.support.design.widget.CoordinatorLayout>
