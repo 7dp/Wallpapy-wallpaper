@@ -78,8 +78,6 @@ public class TabCollections extends Fragment {
 
         pullToRefresh(CLIENT_ID, username, container);
 
-//        infiniteScroll(CLIENT_ID, username, view, container);
-
         return view;
     }
 
@@ -290,18 +288,4 @@ public class TabCollections extends Fragment {
             }
         });
     }
-
-//    private void infiniteScroll(
-//            final String clientId,
-//            final String username,
-//            final View view,
-//            final ViewGroup container) {
-//
-//        recyclerView.addOnScrollListener(new EndlessOnScrollListener() {
-//            @Override
-//            public void onLoadMore(int page) {
-//                requestUserCollections(clientId, username, page, view, container);
-//            }
-//        });
-//    }
 }
