@@ -77,8 +77,6 @@ public class TabUserLikes extends Fragment {
 
         pullToRefresh(CLIENT_ID, username, container);
 
-//        infiniteScroll(CLIENT_ID, username, container);
-
         return view;
     }
 
@@ -151,10 +149,6 @@ public class TabUserLikes extends Fragment {
                             // AUTHOR
                             JSONObject objAuthor = objRoot.getJSONObject("user");
                             String name = objAuthor.getString("name");
-
-                            // author profile
-                            JSONObject profileImage = objAuthor.getJSONObject("profile_image");
-                            String profile_medium = profileImage.getString("medium");
 
                             Urls urls = new Urls();
                             urls.setRegular(regular);
@@ -241,21 +235,7 @@ public class TabUserLikes extends Fragment {
                 newAdapter.notifyDataSetChanged();
 
                 requestUserLikes(clientId, username, 1, container);
-//                infiniteScroll(clientId, username, view, container);
             }
         });
     }
-
-//    private void infiniteScroll(
-//            final String clientId,
-//            final String username,
-//            final ViewGroup container) {
-//
-//        recyclerView.addOnScrollListener(new EndlessOnScrollListener() {
-//            @Override
-//            public void onLoadMore(int page) {
-//                requestUserLikes(clientId, username, page, view, container);
-//            }
-//        });
-//    }
 }

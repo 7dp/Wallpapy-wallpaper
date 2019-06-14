@@ -387,8 +387,7 @@ public class DetailActivity extends AppCompatActivity {
             progressDialog.dismiss();
 
         } catch (Exception e) {
-//            Bitmap bitmap = MediaStore.Images.Media.getBitmap(DetailActivity.this.getContentResolver(), uri);
-//            WallpaperManager.getInstance(DetailActivity.this).setBitmap(bitmap);
+
             Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
             intent.setDataAndType(uri, "image/*");
             intent.putExtra("mimeType", "image/*");

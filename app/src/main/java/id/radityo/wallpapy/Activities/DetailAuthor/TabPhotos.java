@@ -50,6 +50,7 @@ public class TabPhotos extends Fragment {
     EndlessOnScrollListener endlessScrollListener;
     DetailAuthorActivity activity;
     String username;
+    int itemCount;
 
     private void findViewById(View view) {
         recyclerView = view.findViewById(R.id.recycler_tab_photos);
@@ -127,6 +128,7 @@ public class TabPhotos extends Fragment {
                         swipeRefresh.setRefreshing(false);
 
                         JSONArray array = new JSONArray(response.body().string());
+                        itemCount = array.length();
 
                         for (int i = 0; i < array.length(); i++) {
 
@@ -235,5 +237,9 @@ public class TabPhotos extends Fragment {
                 requestUserPhotos(clientId, username, 1, container);
             }
         });
+    }
+
+    public int getItemCount() {
+        return itemCount;
     }
 }
