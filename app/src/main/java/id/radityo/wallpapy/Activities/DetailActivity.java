@@ -33,7 +33,6 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,7 +85,6 @@ public class DetailActivity extends AppCompatActivity {
     Toolbar toolbar;
     ImageView ivPhoto;
     LinearLayout containerDesc, shouldReplace;
-    RelativeLayout containerAuthor;
     ImageView ivAuthor;
     FloatingActionMenu fabMenu;
     FloatingActionButton fabDownload, fabInfo,
@@ -124,7 +122,6 @@ public class DetailActivity extends AppCompatActivity {
         fabDownload = findViewById(R.id.download_item);
         fabSetWall = findViewById(R.id.set_wallpaper_item);
         fabBrowse = findViewById(R.id.browse_item);
-        containerAuthor = findViewById(R.id.container_author_detail);
 
         shouldReplace.setVisibility(View.GONE);
         fabMenu.hideMenuButton(false);
@@ -516,11 +513,11 @@ public class DetailActivity extends AppCompatActivity {
                         else tvColor.setText(color);
 
                         Glide.with(getApplicationContext())
-                                .load(profile_medium)
+                                .load(profile_large)
                                 .circleCrop()
                                 .thumbnail(0.5F)
                                 .error(R.drawable.ic_menu_gallery)
-                                .fallback(new ColorDrawable(Color.GRAY))
+                                .fallback(R.drawable.person_placeholder)
                                 .placeholder(new ColorDrawable(Color.WHITE))
                                 .into(ivAuthor);
 

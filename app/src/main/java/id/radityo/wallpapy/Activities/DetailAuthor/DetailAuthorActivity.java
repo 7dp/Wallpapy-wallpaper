@@ -241,7 +241,7 @@ public class DetailAuthorActivity extends AppCompatActivity {
     private void setCollapsingColor() {
         collapsingToolbar.setStatusBarScrimColor(Color.BLACK);
         collapsingToolbar.setContentScrimColor(Color.BLACK);
-        ivForeground.setImageResource(R.drawable.person_placeholder);
+//        ivForeground.setImageResource(R.drawable.person_placeholder);
         ivBackground.setImageResource(android.R.color.darker_gray);
 
         Window w = getWindow();

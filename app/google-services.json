@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "401236539568",
+    "firebase_url": "https://wallpapy-wrad415.firebaseio.com",
+    "project_id": "wallpapy-wrad415",
+    "storage_bucket": "wallpapy-wrad415.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401236539568:android:49e82009ac6832a9",
+        "android_client_info": {
+          "package_name": "id.radityo.wallpapy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "401236539568-7qv99m199lqkrp937s5kdhnmuhdq3o69.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.radityo.wallpapy",
+            "certificate_hash": "f1ed2f85031a67dfe027b32850994d4f33005bb8"
+          }
+        },
+        {
+          "client_id": "401236539568-sbpnuen4dd48v7tlbcqivj4emn674t13.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ0XMoBdBscWigJQeFIbMz8kXVQAmqcGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "401236539568-sbpnuen4dd48v7tlbcqivj4emn674t13.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

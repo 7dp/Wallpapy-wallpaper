@@ -94,7 +94,6 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
         ImageView imageView;
         TextView tvTitle, tvCount;
 
-
         CollectionsViewHolder(@NonNull View itemView) {
             super(itemView);
 
