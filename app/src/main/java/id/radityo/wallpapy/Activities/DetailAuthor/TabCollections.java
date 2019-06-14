@@ -120,7 +120,7 @@ public class TabCollections extends Fragment {
         Call<ResponseBody> call = service.getUserCollections(username, clientId, 15, page);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
 
@@ -163,9 +163,6 @@ public class TabCollections extends Fragment {
                             String bio = userObject.getString("bio");
                             String location = userObject.getString("location");
 
-                            // USER LINKS
-                            JSONObject linksUserObject = userObject.getJSONObject("links");
-
                             //USER PROFILE IMAGE
                             JSONObject profileImageObject = userObject.getJSONObject("profile_image");
 
@@ -196,11 +193,7 @@ public class TabCollections extends Fragment {
                             JSONObject coverPhotoUrlsObject = coverPhotoObject.getJSONObject("urls");
                             String regular_cover = coverPhotoUrlsObject.getString("regular");
 
-                            // COVER LINKS
-                            JSONObject coverPhotoLinksObject = coverPhotoObject.getJSONObject("links");
-
-
-                            // ----- SET COVER -----
+                            // SET COVER
                             CoverPhotoUrls coverPhotoUrls = new CoverPhotoUrls();
                             coverPhotoUrls.setRegular(regular_cover);
 
@@ -210,18 +203,6 @@ public class TabCollections extends Fragment {
 
                             collections.setCoverPhoto(coverPhoto);
                             collections.setAuthor(author);
-
-
-                            // PREVIEW PHOTO
-                            JSONArray previewArray = rootObject.getJSONArray("preview_photos");
-                            for (int a = 0; a < previewArray.length(); a++) {
-
-                                JSONObject previewObject = previewArray.getJSONObject(a);
-                                String preview_id = previewObject.getString("id");
-
-                                JSONObject previewUrlsObject = previewObject.getJSONObject("urls");
-                                String preview_photo_regular = previewUrlsObject.getString("regular");
-                            }
 
                             collectionsList.add(collections);
                         }
@@ -255,7 +236,7 @@ public class TabCollections extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 Log.e(TAG, "onFailure: Tab Collections");
                 t.printStackTrace();
 
@@ -284,7 +265,6 @@ public class TabCollections extends Fragment {
                 collectionsAdapter.notifyDataSetChanged();
 
                 requestUserCollections(clientId, username, 1, container);
-//                infiniteScroll(clientId, username, container);
             }
         });
     }
