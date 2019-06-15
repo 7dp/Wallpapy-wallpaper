@@ -20,8 +20,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,57 +39,58 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static id.radityo.wallpapy.Activities.Search.SearchActivity.QUERY;
-import static id.radityo.wallpapy.Constants.CLIENT_ID;
-import static id.radityo.wallpapy.MyFragment.New.FragmentNew.TAG;
+import static id.radityo.wallpapy.Fragments.New.FragmentNew.TAG;
+import static id.radityo.wallpapy.Utils.Cons.CLIENT_ID;
 
 public class TabSearchUser extends Fragment {
-    RecyclerView recyclerView;
-    LinearLayout layoutOffline, linearSearch;
-    SwipeRefreshLayout swipeRefresh;
-    ProgressBar progressBar;
+    private RecyclerView mRecyclerView;
+    LinearLayout mLayoutNetwork;
+    private LinearLayout mLinearSearch;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private ProgressBar mProgressBar;
 
-    List<User> userList = new ArrayList<>();
-    UserAdapter userAdapter;
+    private EndlessOnScrollListener mEndlessScrollListener = null;
+    private SearchActivity mActivity;
+    private List<User> mUserList = new ArrayList<>();
+    private UserAdapter mUserAdapter;
 
-    String query;
-    EndlessOnScrollListener endlessScrollListener;
-    SearchActivity activity;
+    private String mQuery;
 
     private void initView(View view) {
-        recyclerView = view.findViewById(R.id.recycler_tab_photos);
-        layoutOffline = view.findViewById(R.id.linear_internet_tab_photos);
-        swipeRefresh = view.findViewById(R.id.refresh_tab_photos);
-        progressBar = view.findViewById(R.id.progress_tab_photos);
-        linearSearch = view.findViewById(R.id.linear_search_tab_photos);
+        mRecyclerView = view.findViewById(R.id.recycler_tab_photos);
+        mLayoutNetwork = view.findViewById(R.id.linear_internet_tab_photos);
+        mSwipeRefresh = view.findViewById(R.id.refresh_tab_photos);
+        mProgressBar = view.findViewById(R.id.progress_tab_photos);
+        mLinearSearch = view.findViewById(R.id.linear_search_tab_photos);
 
-        layoutOffline.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
-        linearSearch.setVisibility(View.VISIBLE);
-        swipeRefresh.setEnabled(false);
+        mLayoutNetwork.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        mLinearSearch.setVisibility(View.VISIBLE);
+        mSwipeRefresh.setEnabled(false);
     }
 
     private void initRecyclerView(ViewGroup container) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setMotionEventSplittingEnabled(false);
-        recyclerView.setPadding(0, 4, 0, 0);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setMotionEventSplittingEnabled(false);
+        mRecyclerView.setPadding(0, 4, 0, 0);
 
-        userAdapter = new UserAdapter(userList, activity);
-        recyclerView.setAdapter(userAdapter);
-        endlessScrollListener = new EndlessOnScrollListener() {
+        mUserAdapter = new UserAdapter(mActivity, mUserList);
+        mRecyclerView.setAdapter(mUserAdapter);
+        mEndlessScrollListener = new EndlessOnScrollListener() {
             @Override
             public void onLoadMore(int page) {
-                searchUsers(CLIENT_ID, page, query);
+                searchUsers(CLIENT_ID, page, mQuery);
             }
         };
 
-        recyclerView.addOnScrollListener(endlessScrollListener);
+        mRecyclerView.addOnScrollListener(mEndlessScrollListener);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = (SearchActivity) getActivity();
+        mActivity = (SearchActivity) getActivity();
     }
 
     @Nullable
@@ -103,12 +106,6 @@ public class TabSearchUser extends Fragment {
 
         initRecyclerView(container);
 
-//        searchUsers(CLIENT_ID, 1, query, view, container);
-
-//        pullToRefresh(CLIENT_ID, query, view, container);
-
-//        infiniteScroll(CLIENT_ID, query, view, container);
-
         return view;
     }
 
@@ -118,21 +115,19 @@ public class TabSearchUser extends Fragment {
 
             if (intent.getAction().equals(QUERY)) {
 
-                query = intent.getStringExtra(QUERY);
-                Log.e(TAG, "### TSU | receive query: " + query);
+                mQuery = intent.getStringExtra(QUERY);
+                Log.e(TAG, "### TSU | receive query: " + mQuery);
 
-                endlessScrollListener.resetState();
-                userList.clear();
-                userAdapter.notifyDataSetChanged();
+                mEndlessScrollListener.resetState();
+                mUserList.clear();
+                mUserAdapter.notifyDataSetChanged();
 
-                linearSearch.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
+                mLinearSearch.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.VISIBLE);
 
-                searchUsers(CLIENT_ID, 1, query);
+                searchUsers(CLIENT_ID, 1, mQuery);
 
-                pullToRefresh(CLIENT_ID, query);
-
-//                infiniteScroll(CLIENT_ID, query);
+                pullToRefresh(CLIENT_ID, mQuery);
             }
         }
     };
@@ -140,14 +135,13 @@ public class TabSearchUser extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume: TSU");
-        activity.registerReceiver(broadcastReceiver, new IntentFilter(QUERY));
+        mActivity.registerReceiver(broadcastReceiver, new IntentFilter(QUERY));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        activity.unregisterReceiver(broadcastReceiver);
+        mActivity.unregisterReceiver(broadcastReceiver);
     }
 
     private void searchUsers(final String clientId, final int page, final String query) {
@@ -157,76 +151,74 @@ public class TabSearchUser extends Fragment {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    try {
 
-                        swipeRefresh.setRefreshing(false);
-                        progressBar.setVisibility(View.GONE);
-                        linearSearch.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
+                    try {
+                        mSwipeRefresh.setRefreshing(false);
+                        mProgressBar.setVisibility(View.GONE);
+                        mLinearSearch.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
 
                         JSONObject rootObject = new JSONObject(response.body().string());
-                        String _total = rootObject.getString("total");
-                        String _totalPages = rootObject.getString("total_pages");
-
                         JSONArray array = rootObject.getJSONArray("results");
 
                         for (int i = 0; i < array.length(); i++) {
 
                             JSONObject userObject = array.getJSONObject(i);
-
-                            String _id = userObject.getString("id");
-                            String _updatedAt = userObject.getString("updated_at");
-                            String _username = userObject.getString("username");
-                            String _name = userObject.getString("name");
+                            String id = userObject.getString("id");
+                            String updatedAt = userObject.getString("updated_at");
+                            String username = userObject.getString("username");
+                            String name = userObject.getString("name");
                             String portfolioUrl = userObject.getString("portfolio_url");
-                            String _bio = userObject.getString("bio");
-                            String _location = userObject.getString("location");
+                            String bio = userObject.getString("bio");
+                            String location = userObject.getString("location");
 
                             // profile
                             JSONObject profileObject = userObject.getJSONObject("profile_image");
-                            String _profileMedium = profileObject.getString("medium");
-                            String _profileLarge = profileObject.getString("large");
+                            String profileMedium = profileObject.getString("medium");
+                            String profileLarge = profileObject.getString("large");
 
                             ProfileImage profileImage = new ProfileImage();
-                            profileImage.setMedium(_profileMedium);
-                            profileImage.setLarge(_profileLarge);
+                            profileImage.setMedium(profileMedium);
+                            profileImage.setLarge(profileLarge);
 
                             User user = new User();
-                            user.setId(_id);
-                            user.setBio(_bio);
-                            user.setUpdatedAt(_updatedAt);
-                            user.setUsername(_username);
-                            user.setName(_name);
+                            user.setId(id);
+                            user.setBio(bio);
+                            user.setUpdatedAt(updatedAt);
+                            user.setUsername(username);
+                            user.setName(name);
                             user.setPortfolioUrl(portfolioUrl);
-                            user.setLocation(_location);
+                            user.setLocation(location);
                             user.setProfileImage(profileImage);
 
-                            userList.add(user);
+                            mUserList.add(user);
                         }
 
-                        userAdapter.notifyDataSetChanged();
+                        mUserAdapter.notifyDataSetChanged();
 
-                        if (userList.isEmpty()) {
-                            Log.e(TAG, "EMPTY: " + userList.size());
-                            linearSearch.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
+                        if (mUserList.isEmpty()) {
+                            Log.e(TAG, "EMPTY: " + mUserList.size());
+                            mLinearSearch.setVisibility(View.VISIBLE);
+                            mRecyclerView.setVisibility(View.GONE);
                         }
 
-                    } catch (Exception e) {
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
 
                 } else {
                     Log.e(TAG, "onResponseNotSuccessful: Tab User");
-                    Toast.makeText(activity,
+                    Toast.makeText(mActivity,
                             getString(R.string.server_error),
                             Toast.LENGTH_SHORT)
                             .show();
 
-                    swipeRefresh.setRefreshing(false);
-                    recyclerView.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
-                    linearSearch.setVisibility(View.VISIBLE);
+                    mSwipeRefresh.setRefreshing(false);
+                    mRecyclerView.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mLinearSearch.setVisibility(View.VISIBLE);
 
                     pullToRefresh(clientId, query);
                 }
@@ -237,15 +229,15 @@ public class TabSearchUser extends Fragment {
                 Log.e(TAG, "onFailure: Tab User");
                 t.printStackTrace();
 
-                Toast.makeText(activity,
+                Toast.makeText(mActivity,
                         getString(R.string.no_internet),
                         Toast.LENGTH_SHORT)
                         .show();
 
-                swipeRefresh.setRefreshing(false);
-                recyclerView.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-                linearSearch.setVisibility(View.VISIBLE);
+                mSwipeRefresh.setRefreshing(false);
+                mRecyclerView.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                mLinearSearch.setVisibility(View.VISIBLE);
 
                 pullToRefresh(clientId, query);
             }
@@ -253,28 +245,16 @@ public class TabSearchUser extends Fragment {
     }
 
     private void pullToRefresh(final String clientId, final String query) {
-        swipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                endlessScrollListener.resetState();
-                userList.clear();
-                userAdapter.notifyDataSetChanged();
+                mEndlessScrollListener.resetState();
+                mUserList.clear();
+                mUserAdapter.notifyDataSetChanged();
 
                 searchUsers(clientId, 1, query);
-//                infiniteScroll(clientId, query);
             }
         });
     }
-
-//    private void infiniteScroll(final String clientId, final String query) {
-//        recyclerView.addOnScrollListener(new EndlessOnScrollListener() {
-//            @Override
-//            public void onLoadMore(int page) {
-//                Log.e(TAG, "onLoadMore: page: " + page);
-//                searchUsers(clientId, page, query);
-//            }
-//        });
-//    }
-
 }

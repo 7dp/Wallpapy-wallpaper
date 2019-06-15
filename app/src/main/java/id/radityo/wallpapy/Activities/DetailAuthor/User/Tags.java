@@ -9,10 +9,10 @@ public class Tags {
 
     @SerializedName("custom")
     @Expose
-    public List<Custom> custom = null;
+    private List<Custom> custom = null;
     @SerializedName("aggregated")
     @Expose
-    public List<Aggregated> aggregated = null;
+    private List<Aggregated> aggregated = null;
 
     public List<Custom> getCustom() {
         return custom;

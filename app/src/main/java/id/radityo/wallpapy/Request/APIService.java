@@ -5,7 +5,6 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.Streaming;
 
 public interface APIService {
 
@@ -45,11 +44,6 @@ public interface APIService {
     Call<ResponseBody> getDetailPhoto(
             @Path("id") String id,
             @Query("client_id") String clientId);
-
-    @GET("{id}/download")
-    @Streaming
-    Call<ResponseBody> downloadFile(
-            @Path("id") String id);
 
     @GET("collections/{id}/photos")
     Call<ResponseBody> getCollectionPhotos(

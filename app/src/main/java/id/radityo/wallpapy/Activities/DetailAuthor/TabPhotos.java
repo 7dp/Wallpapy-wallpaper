@@ -17,15 +17,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import id.radityo.wallpapy.MyFragment.New.Model.Author.Author;
-import id.radityo.wallpapy.MyFragment.New.Model.New;
-import id.radityo.wallpapy.MyFragment.New.Model.Urls;
-import id.radityo.wallpapy.MyFragment.New.NewAdapter;
+import id.radityo.wallpapy.Fragments.New.Model.Author.Author;
+import id.radityo.wallpapy.Fragments.New.Model.New;
+import id.radityo.wallpapy.Fragments.New.Model.Urls;
+import id.radityo.wallpapy.Fragments.New.NewAdapter;
 import id.radityo.wallpapy.R;
 import id.radityo.wallpapy.Request.APIService;
 import id.radityo.wallpapy.Request.ApiClient;
@@ -35,55 +37,55 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static id.radityo.wallpapy.Constants.CLIENT_ID;
-import static id.radityo.wallpapy.MyFragment.New.FragmentNew.TAG;
+import static id.radityo.wallpapy.Fragments.New.FragmentNew.TAG;
+import static id.radityo.wallpapy.Utils.Cons.CLIENT_ID;
 
 public class TabPhotos extends Fragment {
-    RecyclerView recyclerView;
-    LinearLayout layoutOffline;
-    SwipeRefreshLayout swipeRefresh;
-    ProgressBar progressBar;
-    TextView tvEmpty;
+    private RecyclerView mRecyclerView;
+    private LinearLayout mLayoutNetwork;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private ProgressBar mProgressBar;
+    private TextView mTvEmpty;
 
-    List<New> newList = new ArrayList<>();
-    NewAdapter newAdapter;
-    EndlessOnScrollListener endlessScrollListener;
-    DetailAuthorActivity activity;
-    String username;
-    int itemCount;
+    private EndlessOnScrollListener mEndlessScrollListener;
+    private DetailAuthorActivity mActivity;
+    private List<New> mNewList = new ArrayList<>();
+    private NewAdapter mNewAdapter;
 
-    private void findViewById(View view) {
-        recyclerView = view.findViewById(R.id.recycler_tab_photos);
-        layoutOffline = view.findViewById(R.id.linear_internet_tab_photos);
-        swipeRefresh = view.findViewById(R.id.refresh_tab_photos);
-        progressBar = view.findViewById(R.id.progress_tab_photos);
-        tvEmpty = view.findViewById(R.id.tv_empty_tab_photos);
+    private String mUsername;
 
-        layoutOffline.setVisibility(View.GONE);
+    private void initView(View view) {
+        mRecyclerView = view.findViewById(R.id.recycler_tab_photos);
+        mLayoutNetwork = view.findViewById(R.id.linear_internet_tab_photos);
+        mSwipeRefresh = view.findViewById(R.id.refresh_tab_photos);
+        mProgressBar = view.findViewById(R.id.progress_tab_photos);
+        mTvEmpty = view.findViewById(R.id.tv_empty_tab_photos);
+
+        mLayoutNetwork.setVisibility(View.GONE);
     }
 
     private void initRecyclerView(final ViewGroup container) {
-        recyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 2));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setMotionEventSplittingEnabled(false);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 2));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setMotionEventSplittingEnabled(false);
 
-        newAdapter = new NewAdapter(getActivity(), newList);
-        recyclerView.setAdapter(newAdapter);
+        mNewAdapter = new NewAdapter(mActivity, mNewList);
+        mRecyclerView.setAdapter(mNewAdapter);
 
-        endlessScrollListener = new EndlessOnScrollListener() {
+        mEndlessScrollListener = new EndlessOnScrollListener() {
             @Override
             public void onLoadMore(int page) {
-                requestUserPhotos(CLIENT_ID, username, page, container);
+                requestUserPhotos(container, CLIENT_ID, mUsername, page);
             }
         };
 
-        recyclerView.addOnScrollListener(endlessScrollListener);
+        mRecyclerView.addOnScrollListener(mEndlessScrollListener);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = (DetailAuthorActivity) getActivity();
+        mActivity = (DetailAuthorActivity) getActivity();
     }
 
     @Nullable
@@ -91,27 +93,28 @@ public class TabPhotos extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.tab_photos, container, false);
 
-        findViewById(view);
+        initView(view);
 
         initRecyclerView(container);
 
-        username = ((DetailAuthorActivity) getActivity()).getUsername();
-        Log.e(TAG, "username ocv: " + username);
+        mUsername = mActivity.getUsername();
+        Log.e(TAG, "username ocv: " + mUsername);
 
-        requestUserPhotos(CLIENT_ID, username, 1, container);
+        requestUserPhotos(container, CLIENT_ID, mUsername, 1);
 
-        pullToRefresh(CLIENT_ID, username, container);
+        pullToRefresh(container, CLIENT_ID, mUsername);
 
         return view;
     }
 
     private void requestUserPhotos(
+            final ViewGroup container,
             final String clientId,
             final String username,
-            final int page,
-            final ViewGroup container) {
+            final int page) {
 
         APIService service = ApiClient.getBaseUrl();
         Call<ResponseBody> call = service.getUserPhotos(username, clientId, 20, page);
@@ -121,14 +124,14 @@ public class TabPhotos extends Fragment {
                 if (response.isSuccessful()) {
 
                     try {
-                        tvEmpty.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.GONE);
-                        layoutOffline.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                        swipeRefresh.setRefreshing(false);
+
+                        mTvEmpty.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
+                        mLayoutNetwork.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        mSwipeRefresh.setRefreshing(false);
 
                         JSONArray array = new JSONArray(response.body().string());
-                        itemCount = array.length();
 
                         for (int i = 0; i < array.length(); i++) {
 
@@ -170,35 +173,37 @@ public class TabPhotos extends Fragment {
                             unew.setUrls(urls);
                             unew.setAuthor(author);
 
-                            newList.add(unew);
+                            mNewList.add(unew);
                         }
 
-                        newAdapter.notifyDataSetChanged();
+                        mNewAdapter.notifyDataSetChanged();
 
-                        if (newList.isEmpty()) {
-                            Log.e(TAG, "EMPTY: " + newList.size());
-                            tvEmpty.setText(getString(R.string.photos_empty));
-                            tvEmpty.setVisibility(View.VISIBLE);
+                        if (mNewList.isEmpty()) {
+                            Log.e(TAG, "EMPTY: " + mNewList.size());
+                            mTvEmpty.setText(getString(R.string.photos_empty));
+                            mTvEmpty.setVisibility(View.VISIBLE);
                         }
 
-                    } catch (Exception e) {
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
 
                 } else {
-
                     Log.e(TAG, "onResponseNotSuccessful: Tab Photos");
-                    Toast.makeText(activity,
+
+                    Toast.makeText(mActivity,
                             getString(R.string.server_error),
                             Toast.LENGTH_SHORT)
                             .show();
 
-                    recyclerView.setVisibility(View.GONE);
-                    layoutOffline.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
-                    swipeRefresh.setRefreshing(false);
+                    mRecyclerView.setVisibility(View.GONE);
+                    mLayoutNetwork.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mSwipeRefresh.setRefreshing(false);
 
-                    pullToRefresh(clientId, username, container);
+                    pullToRefresh(container, clientId, username);
                 }
             }
 
@@ -207,39 +212,36 @@ public class TabPhotos extends Fragment {
                 Log.e(TAG, "onFailure: Tab Photos");
                 t.printStackTrace();
 
-                Toast.makeText(activity,
+                Toast.makeText(mActivity,
                         getString(R.string.no_internet),
                         Toast.LENGTH_SHORT)
                         .show();
 
-                recyclerView.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-                layoutOffline.setVisibility(View.VISIBLE);
-                swipeRefresh.setRefreshing(false);
+                mRecyclerView.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                mLayoutNetwork.setVisibility(View.VISIBLE);
+                mSwipeRefresh.setRefreshing(false);
 
-                pullToRefresh(clientId, username, container);
+                pullToRefresh(container, clientId, username);
             }
         });
     }
 
     private void pullToRefresh(
+            final ViewGroup container,
             final String clientId,
-            final String username,
-            final ViewGroup container) {
-        swipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            final String username) {
+
+        mSwipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                endlessScrollListener.resetState();
-                newList.clear();
-                newAdapter.notifyDataSetChanged();
+                mEndlessScrollListener.resetState();
+                mNewList.clear();
+                mNewAdapter.notifyDataSetChanged();
 
-                requestUserPhotos(clientId, username, 1, container);
+                requestUserPhotos(container, clientId, username, 1);
             }
         });
-    }
-
-    public int getItemCount() {
-        return itemCount;
     }
 }

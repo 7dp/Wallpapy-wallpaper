@@ -7,25 +7,25 @@ public class UserLinks {
 
     @SerializedName("self")
     @Expose
-    public String self;
+    private String self;
     @SerializedName("html")
     @Expose
-    public String html;
+    private String html;
     @SerializedName("photos")
     @Expose
-    public String photos;
+    private String photos;
     @SerializedName("likes")
     @Expose
-    public String likes;
+    private String likes;
     @SerializedName("portfolio")
     @Expose
-    public String portfolio;
+    private String portfolio;
     @SerializedName("following")
     @Expose
-    public String following;
+    private String following;
     @SerializedName("followers")
     @Expose
-    public String followers;
+    private String followers;
 
     public String getSelf() {
         return self;

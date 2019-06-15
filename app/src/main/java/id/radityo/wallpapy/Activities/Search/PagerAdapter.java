@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
-    private List<Fragment> list = new ArrayList<>();
+    private List<Fragment> mList = new ArrayList<>();
 
     PagerAdapter(FragmentManager fm) {
         super(fm);
@@ -16,15 +16,15 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return list.get(position);
+        return mList.get(position);
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return mList.size();
     }
 
-    public void addFragment(Fragment fragment) {
-        list.add(fragment);
+    void addFragment(Fragment fragment) {
+        mList.add(fragment);
     }
 }

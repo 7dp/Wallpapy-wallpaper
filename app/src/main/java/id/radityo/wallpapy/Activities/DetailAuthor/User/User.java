@@ -9,82 +9,82 @@ public class User {
 
     @SerializedName("id")
     @Expose
-    public String id;
+    private String id;
     @SerializedName("updated_at")
     @Expose
-    public String updatedAt;
+    private String updatedAt;
     @SerializedName("username")
     @Expose
-    public String username;
+    private String username;
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
     @SerializedName("first_name")
     @Expose
-    public String firstName;
+    private String firstName;
     @SerializedName("last_name")
     @Expose
-    public String lastName;
+    private String lastName;
     @SerializedName("twitter_username")
     @Expose
-    public String twitterUsername;
+    private String twitterUsername;
     @SerializedName("portfolio_url")
     @Expose
-    public String portfolioUrl;
+    private String portfolioUrl;
     @SerializedName("bio")
     @Expose
-    public String bio;
+    private String bio;
     @SerializedName("location")
     @Expose
-    public String location;
+    private String location;
     @SerializedName("links")
     @Expose
-    public UserLinks userLinks;
+    private UserLinks userLinks;
     @SerializedName("profile_image")
     @Expose
-    public ProfileImage profileImage;
+    private ProfileImage profileImage;
     @SerializedName("instagram_username")
     @Expose
-    public String instagramUsername;
+    private String instagramUsername;
     @SerializedName("total_collections")
     @Expose
-    public Integer totalCollections;
+    private Integer totalCollections;
     @SerializedName("total_likes")
     @Expose
-    public Integer totalLikes;
+    private Integer totalLikes;
     @SerializedName("total_photos")
     @Expose
-    public Integer totalPhotos;
+    private Integer totalPhotos;
     @SerializedName("accepted_tos")
     @Expose
-    public Boolean acceptedTos;
+    private Boolean acceptedTos;
     @SerializedName("followed_by_user")
     @Expose
-    public Boolean followedByUser;
+    private Boolean followedByUser;
     @SerializedName("photos")
     @Expose
-    public List<Photos> photosList = null;
+    private List<Photos> photosList = null;
     @SerializedName("badge")
     @Expose
-    public String badge;
+    private String badge;
     @SerializedName("downloads")
     @Expose
-    public Integer downloads;
+    private Integer downloads;
     @SerializedName("tags")
     @Expose
-    public Tags tags;
+    private Tags tags;
     @SerializedName("followers_count")
     @Expose
-    public Integer followersCount;
+    private Integer followersCount;
     @SerializedName("following_count")
     @Expose
-    public Integer followingCount;
+    private Integer followingCount;
     @SerializedName("allow_messages")
     @Expose
-    public Boolean allowMessages;
+    private Boolean allowMessages;
     @SerializedName("numeric_id")
     @Expose
-    public Integer numericId;
+    private Integer numericId;
 
     public String getId() {
         return id;

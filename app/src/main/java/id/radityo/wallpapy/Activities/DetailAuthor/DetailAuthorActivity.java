@@ -22,50 +22,54 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.MultiTransformation;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 
-import id.radityo.wallpapy.BlurTransformation;
 import id.radityo.wallpapy.R;
 import jp.wasabeef.blurry.Blurry;
 
 public class DetailAuthorActivity extends AppCompatActivity {
-    ImageView ivBackground, ivForeground;
-    TextView tvLocation, tvBio, tvName;
-    Toolbar toolbar;
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    CollapsingToolbarLayout collapsingToolbar;
-    AppBarLayout appBar;
-    Drawable drawable = null;
-    public static final String REQ_PHOTOS = "req_photos";
-    private static final String TAG = "wallpapy";
+    private ImageView mIvBackground;
+    private ImageView mIvForeground;
+    private TextView mTvLocation;
+    private TextView mTvBio;
+    private TextView mTvName;
+    private Toolbar mToolbar;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private CollapsingToolbarLayout mCollapsingLayout;
+    private AppBarLayout mAppBar;
+    private Drawable mDrawable = null;
 
-    private String userId, name, imageSmall, authorMed,
-            imageLarge, bio, location, username;
+    private String mUserId;
+    private String mName;
+    private String mImageSmall;
+    private String mAuthorMedium;
+    private String mImageLarge;
+    private String mBio;
+    private String mLocation;
+    private String mUsername;
 
-    private void findViewById() {
-        ivBackground = findViewById(R.id.iv_background_detail_author_activity);
-        ivForeground = findViewById(R.id.iv_foreground_detail_author_activity);
-        toolbar = findViewById(R.id.toolbar_detail_author);
-        tabLayout = findViewById(R.id.tab_layout_author);
-        viewPager = findViewById(R.id.view_pager_author_detail);
-        tvBio = findViewById(R.id.tv_bio_author_detail);
-        tvLocation = findViewById(R.id.tv_location_author_detail);
-        collapsingToolbar = findViewById(R.id.collapsing_author);
-        tvName = findViewById(R.id.tv_name_author_detail);
-        appBar = findViewById(R.id.app_bar_author);
+    private void initView() {
+        mIvBackground = findViewById(R.id.iv_background_detail_author_activity);
+        mIvForeground = findViewById(R.id.iv_foreground_detail_author_activity);
+        mToolbar = findViewById(R.id.toolbar_detail_author);
+        mTabLayout = findViewById(R.id.tab_layout_author);
+        mViewPager = findViewById(R.id.view_pager_author_detail);
+        mTvBio = findViewById(R.id.tv_bio_author_detail);
+        mTvLocation = findViewById(R.id.tv_location_author_detail);
+        mCollapsingLayout = findViewById(R.id.collapsing_author);
+        mTvName = findViewById(R.id.tv_name_author_detail);
+        mAppBar = findViewById(R.id.app_bar_author);
     }
 
     private void initToolbar() {
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setHomeAsUpIndicator(R.drawable.ic_back_white_24);
-        ab.setTitle(name);
+        ab.setTitle(mName);
     }
 
     @Override
@@ -79,16 +83,16 @@ public class DetailAuthorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_author);
 
-        userId = getIntent().getStringExtra("user_id");
-        name = getIntent().getStringExtra("name");
-        username = getIntent().getStringExtra("user_name");
-        imageSmall = getIntent().getStringExtra("profile_image_small");
-        imageLarge = getIntent().getStringExtra("profile_image_large");
-        location = getIntent().getStringExtra("location");
-        bio = getIntent().getStringExtra("bio");
-        authorMed = getIntent().getStringExtra("author_med");
+        mUserId = getIntent().getStringExtra("user_id");
+        mName = getIntent().getStringExtra("name");
+        mUsername = getIntent().getStringExtra("user_name");
+        mImageSmall = getIntent().getStringExtra("profile_image_small");
+        mImageLarge = getIntent().getStringExtra("profile_image_large");
+        mLocation = getIntent().getStringExtra("location");
+        mBio = getIntent().getStringExtra("bio");
+        mAuthorMedium = getIntent().getStringExtra("author_med");
 
-        findViewById();
+        initView();
 
         initToolbar();
 
@@ -98,7 +102,7 @@ public class DetailAuthorActivity extends AppCompatActivity {
     private Drawable nullDrawable() {
         Glide.with(DetailAuthorActivity.this)
                 .asDrawable()
-                .load(authorMed)
+                .load(mAuthorMedium)
                 .fallback(new ColorDrawable(Color.GRAY))
                 .error(new ColorDrawable(Color.GRAY))
                 .into(new CustomTarget<Drawable>() {
@@ -106,7 +110,7 @@ public class DetailAuthorActivity extends AppCompatActivity {
                     public void onResourceReady(
                             @NonNull Drawable resource,
                             @Nullable Transition<? super Drawable> transition) {
-                        drawable = resource;
+                        mDrawable = resource;
                     }
 
                     @Override
@@ -115,49 +119,41 @@ public class DetailAuthorActivity extends AppCompatActivity {
                     }
                 });
 
-        return drawable;
+        return mDrawable;
     }
 
     private void setDefaultValueProperties() {
-        if (imageLarge == null) {
-            setCollapsingColor();
-        } else {
+        if (mImageLarge == null) setCollapsingColor();
+        else {
             Glide.with(DetailAuthorActivity.this)
-                    .load(imageLarge)
+                    .load(mImageLarge)
                     .circleCrop()
                     .error(new ColorDrawable(Color.GRAY))
                     .fallback(nullDrawable())
                     .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(ivForeground);
+                    .into(mIvForeground);
 
             setCustomColorAndBlur();
         }
 
-        BlurTransformation blurTransformation = new BlurTransformation(DetailAuthorActivity.this, 50F);
-        MultiTransformation<Bitmap> multiTrans = new MultiTransformation<>(blurTransformation, new CenterCrop());
+        mTvName.setText(mName);
+        if (mBio == null || mBio.equals("null")) mTvBio.setVisibility(View.GONE);
+        else mTvBio.setText(mBio.trim());
 
-        tvName.setText(name);
-        if (bio == null || bio.equals("null"))
-            tvBio.setVisibility(View.GONE);
-        else
-            tvBio.setText(bio.trim());
-
-        if (location == null || location.equals("null"))
-            tvLocation.setVisibility(View.GONE);
-        else
-            tvLocation.setText(location.trim());
+        if (mLocation == null || mLocation.equals("null")) mTvLocation.setVisibility(View.GONE);
+        else mTvLocation.setText(mLocation.trim());
 
         initTabLayout();
 
-        appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(final AppBarLayout appBarLayout, final int verticalOffset) {
-                float offsetAlpha = (appBarLayout.getY() / appBar.getTotalScrollRange());
+                float offsetAlpha = (appBarLayout.getY() / mAppBar.getTotalScrollRange());
                 float alpha = 1 - (offsetAlpha * -2.9f);
-                tvBio.setAlpha(alpha);
-                tvName.setAlpha(alpha);
-                tvLocation.setAlpha(alpha);
-                ivForeground.setAlpha(alpha);
+                mTvBio.setAlpha(alpha);
+                mTvName.setAlpha(alpha);
+                mTvLocation.setAlpha(alpha);
+                mIvForeground.setAlpha(alpha);
             }
         });
     }
@@ -165,7 +161,7 @@ public class DetailAuthorActivity extends AppCompatActivity {
     private void setCustomColorAndBlur() {
         Glide.with(DetailAuthorActivity.this)
                 .asBitmap()
-                .load(imageLarge)
+                .load(mImageLarge)
                 .fallback(nullDrawable())
                 .error(new ColorDrawable(Color.GRAY))
                 .into(new CustomTarget<Bitmap>() {
@@ -178,8 +174,8 @@ public class DetailAuthorActivity extends AppCompatActivity {
                             @Override
                             public void onGenerated(@Nullable Palette palette) {
                                 Palette.Swatch dominant = palette.getDominantSwatch();
-                                collapsingToolbar.setStatusBarScrimColor(dominant.getRgb());
-                                collapsingToolbar.setContentScrimColor(dominant.getRgb());
+                                mCollapsingLayout.setStatusBarScrimColor(dominant.getRgb());
+                                mCollapsingLayout.setContentScrimColor(dominant.getRgb());
 
                                 Window w = getWindow();
                                 w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -191,7 +187,7 @@ public class DetailAuthorActivity extends AppCompatActivity {
                                 .radius(5)
                                 .animate(300)
                                 .from(resource)
-                                .into(ivBackground);
+                                .into(mIvBackground);
                     }
 
                     @Override
@@ -202,15 +198,15 @@ public class DetailAuthorActivity extends AppCompatActivity {
     }
 
     private void initTabLayout() {
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(2);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount());
+        mViewPager.setAdapter(pagerAdapter);
+        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tabLayout.getSelectedTabPosition());
+                mViewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
@@ -226,7 +222,7 @@ public class DetailAuthorActivity extends AppCompatActivity {
     }
 
     public String getUsername() {
-        return username;
+        return mUsername;
     }
 
     private static int manipulateColor(int color) {
@@ -239,15 +235,13 @@ public class DetailAuthorActivity extends AppCompatActivity {
     }
 
     private void setCollapsingColor() {
-        collapsingToolbar.setStatusBarScrimColor(Color.BLACK);
-        collapsingToolbar.setContentScrimColor(Color.BLACK);
-//        ivForeground.setImageResource(R.drawable.person_placeholder);
-        ivBackground.setImageResource(android.R.color.darker_gray);
+        mCollapsingLayout.setStatusBarScrimColor(Color.BLACK);
+        mCollapsingLayout.setContentScrimColor(Color.BLACK);
+        mIvBackground.setImageResource(android.R.color.darker_gray);
 
         Window w = getWindow();
         w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         w.setStatusBarColor(manipulateColor(Color.BLACK));
     }
-
 }

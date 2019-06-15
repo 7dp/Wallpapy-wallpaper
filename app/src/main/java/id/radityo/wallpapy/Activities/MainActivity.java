@@ -10,18 +10,16 @@ import com.crashlytics.android.Crashlytics;
 import java.util.ArrayList;
 
 import devlight.io.library.ntb.NavigationTabBar;
-import id.radityo.wallpapy.MyFragment.Collections.FragmentCollections;
-import id.radityo.wallpapy.MyFragment.Featured.FragmentFeatured;
-import id.radityo.wallpapy.MyFragment.New.FragmentNew;
+import id.radityo.wallpapy.Fragments.Collections.FragmentCollections;
+import id.radityo.wallpapy.Fragments.Featured.FragmentFeatured;
+import id.radityo.wallpapy.Fragments.New.FragmentNew;
 import id.radityo.wallpapy.R;
 import id.radityo.wallpapy.Utils.StatePagerAdapter;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "wallpapy";
-    NavigationTabBar navBar;
-    ViewPager viewPager;
-    public String orderby = "";
+    NavigationTabBar mNavigationBar;
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,21 +27,22 @@ public class MainActivity extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
-        viewPager = findViewById(R.id.view_pager_main);
-        navBar = findViewById(R.id.nav_tab_bar);
+        mViewPager = findViewById(R.id.view_pager_main);
+        mNavigationBar = findViewById(R.id.nav_tab_bar);
 
         final ActionBar ab = getSupportActionBar();
+        assert ab != null;
         ab.setTitle(getString(R.string.newf));
 
         final StatePagerAdapter pagerAdapter = new StatePagerAdapter(getSupportFragmentManager());
-
         pagerAdapter.addFragment(new FragmentNew());
         pagerAdapter.addFragment(new FragmentFeatured());
         pagerAdapter.addFragment(new FragmentCollections());
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(2);
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.setAdapter(pagerAdapter);
+        mViewPager.setOffscreenPageLimit(2);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
 
@@ -54,15 +53,15 @@ public class MainActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         ab.setTitle(getString(R.string.newf));
-                        navBar.show();
+                        mNavigationBar.show();
                         break;
                     case 1:
                         ab.setTitle(getString(R.string.featuredf));
-                        navBar.show();
+                        mNavigationBar.show();
                         break;
                     case 2:
                         ab.setTitle(getString(R.string.collectionsf));
-                        navBar.show();
+                        mNavigationBar.show();
                         break;
                 }
             }
@@ -73,52 +72,49 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        initNavBar();
+        initNavigationBar();
     }
 
-    private void initNavBar() {
+    private void initNavigationBar() {
         ArrayList<NavigationTabBar.Model> modelList = new ArrayList<>();
-        int color = getResources().getColor(R.color.orange);
+        int orange = getResources().getColor(R.color.orange);
 
-        modelList.add(
-                new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.ic_hot_24),
-                        color)
-                        .title("New")
-                        .build());
+        modelList.add(new NavigationTabBar.Model.Builder(
+                getResources().getDrawable(R.drawable.ic_hot_24),
+                orange)
+                .title("New")
+                .build());
 
-        modelList.add(
-                new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.ic_star_24),
-                        color)
-                        .title("Featured")
-                        .build());
+        modelList.add(new NavigationTabBar.Model.Builder(
+                getResources().getDrawable(R.drawable.ic_star_24),
+                orange)
+                .title("Featured")
+                .build());
 
-        modelList.add(
-                new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.ic_category_24),
-                        color)
-                        .title("Collections")
-                        .build());
+        modelList.add(new NavigationTabBar.Model.Builder(
+                getResources().getDrawable(R.drawable.ic_category_24),
+                orange)
+                .title("Collections")
+                .build());
 
-        navBar.setModels(modelList);
-        navBar.setViewPager(viewPager);
-        navBar.setBehaviorEnabled(true);
-        navBar.setAnimationDuration(250);
-        navBar.setIconSizeFraction(0.4F);
+        mNavigationBar.setModels(modelList);
+        mNavigationBar.setViewPager(mViewPager);
+        mNavigationBar.setBehaviorEnabled(true);
+        mNavigationBar.setAnimationDuration(250);
+        mNavigationBar.setIconSizeFraction(0.43F);
     }
 
     @Override
     public void onBackPressed() {
-        switch (viewPager.getCurrentItem()) {
+        switch (mViewPager.getCurrentItem()) {
             case 0:
                 super.onBackPressed();
                 break;
             case 1:
-                viewPager.setCurrentItem(0);
+                mViewPager.setCurrentItem(0);
                 break;
             case 2:
-                viewPager.setCurrentItem(0);
+                mViewPager.setCurrentItem(0);
                 break;
         }
     }

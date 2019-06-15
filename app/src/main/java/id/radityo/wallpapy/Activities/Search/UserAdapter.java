@@ -22,12 +22,12 @@ import id.radityo.wallpapy.Activities.DetailAuthor.User.User;
 import id.radityo.wallpapy.R;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
-    private List<User> userList;
-    private Activity activity;
+    private List<User> mUserList;
+    private Activity mActivity;
 
-    UserAdapter(List<User> userList, Activity activity) {
-        this.userList = userList;
-        this.activity = activity;
+    UserAdapter(Activity activity, List<User> userList) {
+        this.mActivity = activity;
+        this.mUserList = userList;
     }
 
     @NonNull
@@ -39,24 +39,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int i) {
-        final User user = userList.get(i);
+        final User user = mUserList.get(i);
 
-        Glide.with(activity)
+        Glide.with(mActivity)
                 .load(user.getProfileImage().getMedium())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .circleCrop()
                 .placeholder(new ColorDrawable(Color.WHITE))
                 .fallback(new ColorDrawable(Color.GRAY))
-                .into(holder.imageView);
+                .into(holder.mImageView);
 
-        holder.tvName.setText(user.getName());
-        holder.tvUsername.setText("@".concat(user.getUsername()));
+        holder.mTvName.setText(user.getName());
+        holder.mTvUsername.setText("@".concat(user.getUsername()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, DetailAuthorActivity.class);
-
+                Intent intent = new Intent(mActivity, DetailAuthorActivity.class);
                 intent.putExtra("user_id", user.getId());
                 intent.putExtra("name", user.getName());
                 intent.putExtra("user_name", user.getUsername());
@@ -64,26 +63,25 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 intent.putExtra("profile_image_large", user.getProfileImage().getLarge());
                 intent.putExtra("location", user.getLocation());
                 intent.putExtra("bio", user.getBio());
-
-                activity.startActivity(intent);
+                mActivity.startActivity(intent);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return mUserList.size();
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-        TextView tvUsername, tvName;
+        ImageView mImageView;
+        TextView mTvUsername, mTvName;
 
         UserViewHolder(@NonNull View view) {
             super(view);
-            imageView = view.findViewById(R.id.iv_item_user);
-            tvUsername = view.findViewById(R.id.tv_username_item_user);
-            tvName = view.findViewById(R.id.tv_name_item_user);
+            mImageView = view.findViewById(R.id.iv_item_user);
+            mTvUsername = view.findViewById(R.id.tv_username_item_user);
+            mTvName = view.findViewById(R.id.tv_name_item_user);
         }
     }
 }

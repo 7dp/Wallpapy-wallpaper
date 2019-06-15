@@ -20,15 +20,17 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import id.radityo.wallpapy.MyFragment.New.Model.Author.Author;
-import id.radityo.wallpapy.MyFragment.New.Model.New;
-import id.radityo.wallpapy.MyFragment.New.Model.Urls;
-import id.radityo.wallpapy.MyFragment.New.NewAdapter;
+import id.radityo.wallpapy.Fragments.New.Model.Author.Author;
+import id.radityo.wallpapy.Fragments.New.Model.New;
+import id.radityo.wallpapy.Fragments.New.Model.Urls;
+import id.radityo.wallpapy.Fragments.New.NewAdapter;
 import id.radityo.wallpapy.R;
 import id.radityo.wallpapy.Request.APIService;
 import id.radityo.wallpapy.Request.ApiClient;
@@ -39,56 +41,57 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static id.radityo.wallpapy.Activities.Search.SearchActivity.QUERY;
-import static id.radityo.wallpapy.Constants.CLIENT_ID;
-import static id.radityo.wallpapy.MyFragment.New.FragmentNew.TAG;
+import static id.radityo.wallpapy.Fragments.New.FragmentNew.TAG;
+import static id.radityo.wallpapy.Utils.Cons.CLIENT_ID;
 
 public class TabSearchPhotos extends Fragment {
-    RecyclerView recyclerView;
-    LinearLayout layoutOffline, linearSearch;
-    SwipeRefreshLayout swipeRefresh;
-    ProgressBar progressBar;
+    private RecyclerView mRecyclerView;
+    LinearLayout mLayoutNetwork;
+    private LinearLayout mLinearSearch;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private ProgressBar mProgressBar;
 
-    List<New> newList = new ArrayList<>();
-    NewAdapter newAdapter;
+    private EndlessOnScrollListener mEndlessScrollListener;
+    private SearchActivity mActivity;
+    private List<New> mNewList = new ArrayList<>();
+    private NewAdapter mNewAdapter;
 
-    String query;
-    EndlessOnScrollListener endlessScrollListener;
-    SearchActivity activity;
+    private String mQuery;
 
     private void initView(View view) {
-        recyclerView = view.findViewById(R.id.recycler_tab_photos);
-        layoutOffline = view.findViewById(R.id.linear_internet_tab_photos);
-        swipeRefresh = view.findViewById(R.id.refresh_tab_photos);
-        progressBar = view.findViewById(R.id.progress_tab_photos);
-        linearSearch = view.findViewById(R.id.linear_search_tab_photos);
+        mRecyclerView = view.findViewById(R.id.recycler_tab_photos);
+        mLayoutNetwork = view.findViewById(R.id.linear_internet_tab_photos);
+        mSwipeRefresh = view.findViewById(R.id.refresh_tab_photos);
+        mProgressBar = view.findViewById(R.id.progress_tab_photos);
+        mLinearSearch = view.findViewById(R.id.linear_search_tab_photos);
 
-        layoutOffline.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
-        linearSearch.setVisibility(View.VISIBLE);
-        swipeRefresh.setEnabled(false);
+        mLayoutNetwork.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        mLinearSearch.setVisibility(View.VISIBLE);
+        mSwipeRefresh.setEnabled(false);
     }
 
     private void initRecyclerView(ViewGroup container) {
-        recyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 2));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setMotionEventSplittingEnabled(false);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 2));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setMotionEventSplittingEnabled(false);
 
-        newAdapter = new NewAdapter(activity, newList);
-        recyclerView.setAdapter(newAdapter);
-        endlessScrollListener = new EndlessOnScrollListener() {
+        mNewAdapter = new NewAdapter(mActivity, mNewList);
+        mRecyclerView.setAdapter(mNewAdapter);
+        mEndlessScrollListener = new EndlessOnScrollListener() {
             @Override
             public void onLoadMore(int page) {
-                searchPhotos(CLIENT_ID, query, page);
+                searchPhotos(CLIENT_ID, mQuery, page);
             }
         };
 
-        recyclerView.addOnScrollListener(endlessScrollListener);
+        mRecyclerView.addOnScrollListener(mEndlessScrollListener);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = (SearchActivity) getActivity();
+        mActivity = (SearchActivity) getActivity();
     }
 
     @Nullable
@@ -104,12 +107,6 @@ public class TabSearchPhotos extends Fragment {
 
         initRecyclerView(container);
 
-//        searchPhotos(CLIENT_ID, query, 1, view, container);
-
-//        pullToRefresh(CLIENT_ID, query, view, container);
-
-//        infiniteScroll(CLIENT_ID, query, view, container);
-
         return view;
     }
 
@@ -118,21 +115,19 @@ public class TabSearchPhotos extends Fragment {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(QUERY)) {
 
-                query = intent.getStringExtra(QUERY);
-                Log.e(TAG, "### TSP | receive query: " + query);
+                mQuery = intent.getStringExtra(QUERY);
+                Log.e(TAG, "### TSP | receive query: " + mQuery);
 
-                endlessScrollListener.resetState();
-                newList.clear();
-                newAdapter.notifyDataSetChanged();
+                mEndlessScrollListener.resetState();
+                mNewList.clear();
+                mNewAdapter.notifyDataSetChanged();
 
-                linearSearch.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
+                mLinearSearch.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.VISIBLE);
 
-                searchPhotos(CLIENT_ID, query, 1);
+                searchPhotos(CLIENT_ID, mQuery, 1);
 
-                pullToRefresh(CLIENT_ID, query);
-
-//                infiniteScroll(CLIENT_ID, query);
+                pullToRefresh(CLIENT_ID, mQuery);
             }
         }
     };
@@ -140,14 +135,13 @@ public class TabSearchPhotos extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume: TSP");
-        activity.registerReceiver(broadcastReceiver, new IntentFilter(QUERY));
+        mActivity.registerReceiver(broadcastReceiver, new IntentFilter(QUERY));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        activity.unregisterReceiver(broadcastReceiver);
+        mActivity.unregisterReceiver(broadcastReceiver);
     }
 
     private void searchPhotos(final String clientId, final String query, final int page) {
@@ -157,15 +151,15 @@ public class TabSearchPhotos extends Fragment {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
+
                     try {
 
-                        swipeRefresh.setRefreshing(false);
-                        progressBar.setVisibility(View.GONE);
-                        linearSearch.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
+                        mSwipeRefresh.setRefreshing(false);
+                        mProgressBar.setVisibility(View.GONE);
+                        mLinearSearch.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
 
                         JSONObject rootObject = new JSONObject(response.body().string());
-
                         JSONArray array = rootObject.getJSONArray("results");
 
                         for (int i = 0; i < array.length(); i++) {
@@ -189,10 +183,6 @@ public class TabSearchPhotos extends Fragment {
                             JSONObject objAuthor = photosObject.getJSONObject("user");
                             String name = objAuthor.getString("name");
 
-                            // author profile
-                            JSONObject profileImage = objAuthor.getJSONObject("profile_image");
-                            String profile_medium = profileImage.getString("medium");
-
                             Urls urls = new Urls();
                             urls.setRegular(regular);
 
@@ -212,33 +202,35 @@ public class TabSearchPhotos extends Fragment {
                             unew.setUrls(urls);
                             unew.setAuthor(author);
 
-                            newList.add(unew);
+                            mNewList.add(unew);
                         }
 
-                        newAdapter.notifyDataSetChanged();
+                        mNewAdapter.notifyDataSetChanged();
 
-                        if (newList.isEmpty()) {
-                            Log.e(TAG, "EMPTY: " + newList.size());
-                            linearSearch.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
+                        if (mNewList.isEmpty()) {
+                            Log.e(TAG, "EMPTY: " + mNewList.size());
+                            mLinearSearch.setVisibility(View.VISIBLE);
+                            mRecyclerView.setVisibility(View.GONE);
                         }
 
-                    } catch (Exception e) {
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
 
                 } else {
                     Log.e(TAG, "onResponseNotSuccessful: Tab Search Photos");
                     Toast.makeText(
-                            activity,
+                            mActivity,
                             getString(R.string.server_error),
                             Toast.LENGTH_SHORT)
                             .show();
 
-                    recyclerView.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
-                    linearSearch.setVisibility(View.VISIBLE);
-                    swipeRefresh.setRefreshing(false);
+                    mRecyclerView.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mLinearSearch.setVisibility(View.VISIBLE);
+                    mSwipeRefresh.setRefreshing(false);
 
                     pullToRefresh(clientId, query);
                 }
@@ -249,15 +241,15 @@ public class TabSearchPhotos extends Fragment {
                 Log.e(TAG, "onFailure: Tab Search Photos");
                 t.printStackTrace();
 
-                Toast.makeText(activity,
+                Toast.makeText(mActivity,
                         getString(R.string.no_internet),
                         Toast.LENGTH_SHORT)
                         .show();
 
-                recyclerView.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-                linearSearch.setVisibility(View.VISIBLE);
-                swipeRefresh.setRefreshing(false);
+                mRecyclerView.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                mLinearSearch.setVisibility(View.VISIBLE);
+                mSwipeRefresh.setRefreshing(false);
 
                 pullToRefresh(clientId, query);
             }
@@ -265,27 +257,16 @@ public class TabSearchPhotos extends Fragment {
     }
 
     private void pullToRefresh(final String clientId, final String query) {
-        swipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                endlessScrollListener.resetState();
-                newList.clear();
-                newAdapter.notifyDataSetChanged();
+                mEndlessScrollListener.resetState();
+                mNewList.clear();
+                mNewAdapter.notifyDataSetChanged();
 
                 searchPhotos(clientId, query, 1);
-//                infiniteScroll(clientId, query);
             }
         });
     }
-
-//    private void infiniteScroll(final String clientId, final String query) {
-//        recyclerView.addOnScrollListener(new EndlessOnScrollListener() {
-//            @Override
-//            public void onLoadMore(int page) {
-//                searchPhotos(clientId, query, page);
-//            }
-//        });
-//    }
-
 }

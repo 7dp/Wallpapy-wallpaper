@@ -7,10 +7,10 @@ public class Photos {
 
     @SerializedName("id")
     @Expose
-    public String id;
+    private String id;
     @SerializedName("urls")
     @Expose
-    public Urls urls;
+    private Urls urls;
 
     public String getId() {
         return id;

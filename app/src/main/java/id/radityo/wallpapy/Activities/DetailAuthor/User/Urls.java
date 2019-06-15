@@ -7,19 +7,19 @@ public class Urls {
 
     @SerializedName("raw")
     @Expose
-    public String raw;
+    private String raw;
     @SerializedName("full")
     @Expose
-    public String full;
+    private String full;
     @SerializedName("regular")
     @Expose
-    public String regular;
+    private String regular;
     @SerializedName("small")
     @Expose
-    public String small;
+    private String small;
     @SerializedName("thumb")
     @Expose
-    public String thumb;
+    private String thumb;
 
     public String getRaw() {
         return raw;

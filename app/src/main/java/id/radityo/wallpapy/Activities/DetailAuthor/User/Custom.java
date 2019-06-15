@@ -7,7 +7,7 @@ public class Custom {
 
     @SerializedName("title")
     @Expose
-    public String title;
+    private String title;
 
     public String getTitle() {
         return title;

@@ -5,10 +5,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
-    private boolean isLoading = true;
-    private int previousTotal = 0;
-    private int currentPage = 1;
-    private LinearLayoutManager layoutManager;
+    private boolean mIsLoading = true;
+    private int mPreviousTotal = 0;
+    private int mCurrentPage = 1;
 
     public EndlessOnScrollListener() {
     }
@@ -17,34 +16,34 @@ public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListe
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
         int visibleItemCount = recyclerView.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
         int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
-        if (isLoading) {
-            if (totalItemCount > previousTotal) {
-                isLoading = false;
-                previousTotal = totalItemCount;
+        if (mIsLoading) {
+            if (totalItemCount > mPreviousTotal) {
+                mIsLoading = false;
+                mPreviousTotal = totalItemCount;
             }
         }
 
-        int visibleThresold = 2;
+        int visibleThreshold = 2;
 
-        if (!isLoading && (totalItemCount - visibleItemCount <= (firstVisibleItem + visibleThresold))) {
-            isLoading = true;
-            currentPage++;
-            onLoadMore(currentPage);
+        if (!mIsLoading && (totalItemCount - visibleItemCount <= (firstVisibleItem + visibleThreshold))) {
+            mIsLoading = true;
+            mCurrentPage++;
+            onLoadMore(mCurrentPage);
         }
     }
 
     public abstract void onLoadMore(int page);
 
     public void resetState() {
-        this.currentPage = 0;
-        this.previousTotal = 0;
-        this.isLoading = true;
-        currentPage++;
+        this.mCurrentPage = 0;
+        this.mPreviousTotal = 0;
+        this.mIsLoading = true;
+        mCurrentPage++;
     }
 }

@@ -24,6 +24,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -43,7 +44,6 @@ import com.bumptech.glide.request.transition.Transition;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,10 +56,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import id.radityo.wallpapy.Activities.DetailAuthor.DetailAuthorActivity;
-import id.radityo.wallpapy.FullScreenDialog;
 import id.radityo.wallpapy.R;
 import id.radityo.wallpapy.Request.APIService;
 import id.radityo.wallpapy.Request.ApiClient;
+import id.radityo.wallpapy.Utils.FullScreenDialog;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -68,78 +68,105 @@ import retrofit2.Response;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.SET_WALLPAPER;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static id.radityo.wallpapy.Constants.CLIENT_ID;
+import static id.radityo.wallpapy.Utils.Cons.CLIENT_ID;
+import static id.radityo.wallpapy.Utils.Cons.UTM_PARAM;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "wallpapy";
-    private static final String UTM_PARAM = "?utm_source=resplash&utm_medium=referral&utm_campaign=api-credit";
     private static final int PERMISSION_REQUEST_CODE = 200;
-    private String imageId, name, profile_medium,
-            profile_large, bio, user_location,
-            username, full, profile_small;
-    boolean unreg;
-    int permission;
-    Uri uri;
 
-    ProgressDialog progressDialog;
-    Toolbar toolbar;
-    ImageView ivPhoto;
-    LinearLayout containerDesc, shouldReplace;
-    ImageView ivAuthor;
-    FloatingActionMenu fabMenu;
-    FloatingActionButton fabDownload, fabInfo,
-            fabShare, fabSetWall, fabBrowse;
-    ProgressBar progressBar;
-    TextView tvAuthor, tvLocation, tvResolution,
-            tvColor, tvDate, tvDescription,
-            tvLikes, tvDownloads;
-    String make, model, exposure_time,
-            aperture, focal_length, iso,
-            download_links, download_location_links,
-            html, regular, color;
-    String user_id;
-    int width, height, likes, views, downloads;
-    long downloadId;
+    private String mImageId;
+    private String mName;
+    private String mProfileLarge;
+    private String mBio;
+    private String mUserLocation;
+    private String mUsername;
+    private String mFullResolution;
+    private String mProfileSmall;
+    private String mMake;
+    private String mModel;
+    private String mExposureTime;
+    private String mAperture;
+    private String mFocalLength;
+    private String mIso;
+    private String mDownloadLinks;
+    private String mDownloadLocationLinks;
+    private String mHtml;
+    private String mRegular;
+    private String mColor;
+    private String mUserId;
+    private int mPermission;
+    private int mWidth;
+    private int mHeight;
+    private int mLikes;
+    private int mViews;
+    private int mDownloads;
+    private boolean mUnreg;
+    private long mDownloadId;
+    private Uri mUri;
+
+    private ProgressDialog mProgressDialog;
+    private Toolbar mToolbar;
+    private ImageView mIvPhoto;
+    private LinearLayout mContainerDesc;
+    private LinearLayout mShouldReplace;
+    private ImageView mIvAuthor;
+    private FloatingActionMenu mFabMenu;
+    private FloatingActionButton mFabDownload;
+    private FloatingActionButton mFabInfo;
+    private FloatingActionButton mFabShare;
+    private FloatingActionButton mFabSetWallpaper;
+    private FloatingActionButton mFabBrowse;
+    private ProgressBar mProgressBar;
+    private TextView mTvAuthor;
+    private TextView mTvLocation;
+    private TextView mTvResolution;
+    private TextView mTvColor;
+    private TextView mTvDate;
+    private TextView mTvDescription;
+    private TextView mTvLikes;
+    private TextView mTvDownloads;
 
     private void initViewById() {
-        toolbar = findViewById(R.id.toolbar_photo_detail);
-        ivPhoto = findViewById(R.id.photo_detail);
-        ivAuthor = findViewById(R.id.iv_author_detail);
-        tvAuthor = findViewById(R.id.tv_author_detail);
-        tvLocation = findViewById(R.id.tv_location_detail);
-        tvResolution = findViewById(R.id.tv_resolution_detail);
-        tvColor = findViewById(R.id.tv_color_detail);
-        tvDate = findViewById(R.id.tv_date_detail);
-        tvDescription = findViewById(R.id.tv_description_detail);
-        tvLikes = findViewById(R.id.tv_likes_detail);
-        tvDownloads = findViewById(R.id.tv_downloads_detail);
-        containerDesc = findViewById(R.id.linear_description);
-        shouldReplace = findViewById(R.id.linear_to_replace);
-        progressBar = findViewById(R.id.progress_detail);
-        fabMenu = findViewById(R.id.fab_menu);
-        fabInfo = findViewById(R.id.info_item);
-        fabShare = findViewById(R.id.share_item);
-        fabDownload = findViewById(R.id.download_item);
-        fabSetWall = findViewById(R.id.set_wallpaper_item);
-        fabBrowse = findViewById(R.id.browse_item);
+        mToolbar = findViewById(R.id.toolbar_photo_detail);
+        mIvPhoto = findViewById(R.id.photo_detail);
+        mIvAuthor = findViewById(R.id.iv_author_detail);
+        mTvAuthor = findViewById(R.id.tv_author_detail);
+        mTvLocation = findViewById(R.id.tv_location_detail);
+        mTvResolution = findViewById(R.id.tv_resolution_detail);
+        mTvColor = findViewById(R.id.tv_color_detail);
+        mTvDate = findViewById(R.id.tv_date_detail);
+        mTvDescription = findViewById(R.id.tv_description_detail);
+        mTvLikes = findViewById(R.id.tv_likes_detail);
+        mTvDownloads = findViewById(R.id.tv_downloads_detail);
+        mContainerDesc = findViewById(R.id.linear_description);
+        mShouldReplace = findViewById(R.id.linear_to_replace);
+        mProgressBar = findViewById(R.id.progress_detail);
 
-        shouldReplace.setVisibility(View.GONE);
-        fabMenu.hideMenuButton(false);
-        tvLikes.setVisibility(View.GONE);
-        tvDownloads.setVisibility(View.GONE);
+        mFabMenu = findViewById(R.id.fab_menu);
+        mFabInfo = findViewById(R.id.info_item);
+        mFabShare = findViewById(R.id.share_item);
+        mFabDownload = findViewById(R.id.download_item);
+        mFabSetWallpaper = findViewById(R.id.set_wallpaper_item);
+        mFabBrowse = findViewById(R.id.browse_item);
+
+        mFabMenu.hideMenuButton(false);
+        mShouldReplace.setVisibility(View.GONE);
+        mTvLikes.setVisibility(View.GONE);
+        mTvDownloads.setVisibility(View.GONE);
     }
 
     private void initToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setElevation(6f);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(color)));
+        setSupportActionBar(mToolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayShowTitleEnabled(false);
+        ab.setBackgroundDrawable(new ColorDrawable(Color.parseColor(mColor)));
+        ab.setElevation(6f);
 
-        if (isColorDark(Color.parseColor(color)))
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white_24);
-        else
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_black_24);
+        if (isColorDark(Color.parseColor(mColor)))
+            ab.setHomeAsUpIndicator(R.drawable.ic_back_white_24);
+        else ab.setHomeAsUpIndicator(R.drawable.ic_back_black_24);
     }
 
     @Override
@@ -153,9 +180,9 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        imageId = getIntent().getStringExtra("id");
-        color = getIntent().getStringExtra("color");
-        Log.e(TAG, "imageId: " + imageId);
+        mImageId = getIntent().getStringExtra("id");
+        mColor = getIntent().getStringExtra("color");
+        Log.e(TAG, "imageId: " + mImageId);
 
         initViewById();
 
@@ -163,90 +190,32 @@ public class DetailActivity extends AppCompatActivity {
 
         showPhoto();
 
-        requestDetailPhoto(imageId, CLIENT_ID);
+        requestDetailPhoto(mImageId, CLIENT_ID);
 
-        setFloatingActionButton();
+        setupFloatingActionButton();
 
         lookUpAuthor();
     }
 
     // FAB actions
-    private void setFloatingActionButton() {
-        fabMenu.setClosedOnTouchOutside(true);
-        fabMenu.setAnimationDelayPerItem(50);
-        fabInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onFABInfoClick();
-            }
-        });
+    private void setupFloatingActionButton() {
+        mFabMenu.setClosedOnTouchOutside(true);
+        mFabMenu.setAnimationDelayPerItem(0);
 
-        fabDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!checkPermission()) {
-                    requestPermission();
-                    permission = 1;
-                    if (checkPermission()) {
-                        fabMenu.close(true);
-                        downloadId = beginDownload(Uri.parse(download_links), imageId);
-
-                        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-                        registerReceiver(broadcastReceiver, filter);
-                        unreg = true;
-                    }
-                } else {
-                    fabMenu.close(true);
-                    downloadId = beginDownload(Uri.parse(download_links), imageId);
-
-                    IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-                    registerReceiver(broadcastReceiver, filter);
-                    unreg = true;
-                }
-            }
-        });
-
-        fabSetWall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!checkPermission()) {
-                    requestPermission();
-                    permission = 2;
-                    if (checkPermission()) {
-                        onFABSetWallpaperClick();
-                    }
-                } else {
-                    onFABSetWallpaperClick();
-                }
-            }
-        });
-
-        fabShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fabMenu.close(true);
-                shareImage();
-            }
-        });
-
-        fabBrowse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fabMenu.close(true);
-                Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(html + UTM_PARAM));
-                startActivity(webIntent);
-            }
-        });
+        mFabInfo.setOnClickListener(this);
+        mFabDownload.setOnClickListener(this);
+        mFabSetWallpaper.setOnClickListener(this);
+        mFabShare.setOnClickListener(this);
+        mFabBrowse.setOnClickListener(this);
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
             long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             Log.e(TAG, "id: " + id);
 
-            if (id == downloadId) {
+            if (id == mDownloadId) {
                 Toast.makeText(DetailActivity.this, "Download complete!", Toast.LENGTH_LONG).show();
             }
         }
@@ -254,13 +223,9 @@ public class DetailActivity extends AppCompatActivity {
 
     private long beginDownload(Uri uri, String title) {
         // create directory
-        File directory = new File(
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES).toString() + File.separator + getString(R.string.app_name));
-        if (!directory.exists())
-            directory.mkdirs();
-
-        long downloadReference;
+        File directory = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES).toString() + File.separator + getString(R.string.app_name));
+        if (!directory.exists()) directory.mkdirs();
 
         DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -269,7 +234,7 @@ public class DetailActivity extends AppCompatActivity {
                 Environment.DIRECTORY_PICTURES + "/" + getString(R.string.app_name), title.concat(".jpg"));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-        downloadReference = downloadManager.enqueue(request);
+        long downloadReference = downloadManager.enqueue(request);
         Log.e(TAG, "download reference: " + downloadReference);
 
         Toast.makeText(DetailActivity.this, "Download started!", Toast.LENGTH_LONG).show();
@@ -301,8 +266,7 @@ public class DetailActivity extends AppCompatActivity {
                 .setNeutralButton(getString(R.string.open_settings), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", getPackageName(), null);
                         intent.setData(uri);
                         startActivity(intent);
@@ -321,15 +285,15 @@ public class DetailActivity extends AppCompatActivity {
                 .load(urlRegular)
                 .thumbnail(0.5F)
                 .error(R.drawable.ic_menu_gallery)
-                .fallback(R.drawable.ic_menu_gallery)
-                .transition(DrawableTransitionOptions.withCrossFade(500))
+                .fallback(new ColorDrawable(Color.GRAY))
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(new CustomTarget<Drawable>() {
                     @Override
                     public void onResourceReady(
                             @NonNull Drawable resource,
                             @Nullable Transition<? super Drawable> transition) {
 
-                        ivPhoto.setImageDrawable(resource);
+                        mIvPhoto.setImageDrawable(resource);
 
                         Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -345,10 +309,9 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 });
 
-        ivPhoto.setOnClickListener(new View.OnClickListener() {
+        mIvPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 FullScreenDialog dialog = new FullScreenDialog();
                 dialog.setArguments(bundle);
                 dialog.show(getSupportFragmentManager().beginTransaction(), "FullScreenDialog");
@@ -358,11 +321,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void shareImage() {
+        mFabMenu.close(true);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Shared via Wallpapy");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, html + UTM_PARAM);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, mHtml + UTM_PARAM);
         startActivity(Intent.createChooser(shareIntent, "Share via: "));
     }
 
@@ -407,71 +371,60 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
 
-                if (response.isSuccessful() /*&& isGranted*/) {
+                if (response.isSuccessful()) {
 
                     try {
 
-                        Log.e(TAG, "onResponse: step 1");
-                        progressBar.setVisibility(View.GONE);
-                        shouldReplace.setVisibility(View.VISIBLE);
-                        fabMenu.showMenuButton(true);
-                        tvLikes.setVisibility(View.VISIBLE);
-                        tvDownloads.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.GONE);
+                        mShouldReplace.setVisibility(View.VISIBLE);
+                        mTvLikes.setVisibility(View.VISIBLE);
+                        mTvDownloads.setVisibility(View.VISIBLE);
+                        mFabMenu.showMenuButton(true);
 
                         // ROOT
                         JSONObject rootObj = new JSONObject(response.body().string());
 
-                        String id = rootObj.getString("id");
                         String createdAt = rootObj.getString("created_at");
-                        String updatedAt = rootObj.getString("updated_at");
-                        width = rootObj.getInt("width");
-                        height = rootObj.getInt("height");
+                        mWidth = rootObj.getInt("width");
+                        mHeight = rootObj.getInt("height");
                         String color = rootObj.getString("color");
                         String description = rootObj.getString("description");
-                        String alternateDescription = rootObj.getString("alt_description");
-                        JSONArray categories = rootObj.getJSONArray("categories");
-                        boolean sponsored = rootObj.getBoolean("sponsored");
-                        String sponsoredBy = rootObj.getString("sponsored_by");
-                        likes = rootObj.getInt("likes");
-                        views = rootObj.getInt("views");
-                        downloads = rootObj.getInt("downloads");
+                        mLikes = rootObj.getInt("likes");
+                        mViews = rootObj.getInt("views");
+                        mDownloads = rootObj.getInt("downloads");
 
                         // LINKS
                         JSONObject objLinks = rootObj.getJSONObject("links");
-                        download_links = objLinks.getString("download");
-                        download_location_links = objLinks.getString("download_location");
-                        html = objLinks.getString("html");
+                        mDownloadLinks = objLinks.getString("download");
+                        mDownloadLocationLinks = objLinks.getString("download_location");
+                        mHtml = objLinks.getString("html");
 
                         // URLS
                         JSONObject objUrls = rootObj.getJSONObject("urls");
-                        regular = objUrls.getString("regular");
-                        full = objUrls.getString("full");
+                        mRegular = objUrls.getString("regular");
+                        mFullResolution = objUrls.getString("full");
 
                         // USER
                         JSONObject objAuthor = rootObj.getJSONObject("user");
-                        user_id = objAuthor.getString("id");
-                        username = objAuthor.getString("username");
-                        name = objAuthor.getString("name");
-                        bio = objAuthor.getString("bio");
-                        user_location = objAuthor.getString("location");
-
-                        // author links
-                        JSONObject authorLinksObject = objAuthor.getJSONObject("links");
+                        mUserId = objAuthor.getString("id");
+                        mUsername = objAuthor.getString("username");
+                        mName = objAuthor.getString("name");
+                        mBio = objAuthor.getString("bio");
+                        mUserLocation = objAuthor.getString("location");
 
                         // author profile
                         JSONObject profileImage = objAuthor.getJSONObject("profile_image");
-                        profile_small = profileImage.getString("small");
-                        profile_medium = profileImage.getString("medium");
-                        profile_large = profileImage.getString("large");
+                        mProfileSmall = profileImage.getString("small");
+                        mProfileLarge = profileImage.getString("large");
 
                         // EXIF
                         JSONObject exifObj = rootObj.getJSONObject("exif");
-                        make = exifObj.getString("make");
-                        model = exifObj.getString("model");
-                        exposure_time = exifObj.getString("exposure_time");
-                        aperture = exifObj.getString("aperture");
-                        focal_length = exifObj.getString("focal_length");
-                        iso = exifObj.getString("iso");
+                        mMake = exifObj.getString("make");
+                        mModel = exifObj.getString("model");
+                        mExposureTime = exifObj.getString("exposure_time");
+                        mAperture = exifObj.getString("aperture");
+                        mFocalLength = exifObj.getString("focal_length");
+                        mIso = exifObj.getString("iso");
 
                         String title_location = null;
                         if (rootObj.has("location")) {
@@ -479,48 +432,43 @@ public class DetailActivity extends AppCompatActivity {
                             title_location = locationObj.getString("title");
                         }
 
-                        Log.e(TAG, "onResponse: step 2");
                         // set into view
                         SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                         SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.US);
                         Date date = parser.parse(createdAt);
 
                         Log.e(TAG, "date: " + createdAt);
-                        Log.e(TAG, "name: " + name);
-                        Log.e(TAG, "res: " + width + " " + height);
+                        Log.e(TAG, "name: " + mName);
+                        Log.e(TAG, "res: " + mWidth + " " + mHeight);
                         Log.e(TAG, "color: " + color);
 
-                        tvDate.setText(formatter.format(date));
-                        tvAuthor.setText(getString(R.string.by).concat(" ").concat(name));
-                        tvResolution.setText(beautyFormatter(width).concat(" x ").concat(beautyFormatter(height)));
+                        mTvDate.setText(formatter.format(date));
+                        mTvAuthor.setText(getString(R.string.by).concat(" ").concat(mName));
+                        mTvResolution.setText(beautyFormatter(mWidth).concat(" x ").concat(beautyFormatter(mHeight)));
 
                         if (description == null || description.equals("null"))
-                            containerDesc.setVisibility(View.GONE);
-                        else
-                            tvDescription.setText(description);
+                            mContainerDesc.setVisibility(View.GONE);
+                        else mTvDescription.setText(description);
 
-                        tvLikes.setText(beautyFormatter(likes));
-
-                        tvDownloads.setText(beautyFormatter(downloads));
+                        mTvLikes.setText(beautyFormatter(mLikes));
+                        mTvDownloads.setText(beautyFormatter(mDownloads));
 
                         if (title_location == null || title_location.equals("null"))
-                            tvLocation.setVisibility(View.GONE);
-                        else tvLocation.setText(title_location);
+                            mTvLocation.setVisibility(View.GONE);
+                        else mTvLocation.setText(title_location);
 
                         if (color == null || color.equals("null"))
-                            tvColor.setVisibility(View.GONE);
-                        else tvColor.setText(color);
+                            mTvColor.setVisibility(View.GONE);
+                        else mTvColor.setText(color);
 
                         Glide.with(getApplicationContext())
-                                .load(profile_large)
+                                .load(mProfileLarge)
                                 .circleCrop()
                                 .thumbnail(0.5F)
                                 .error(R.drawable.ic_menu_gallery)
                                 .fallback(R.drawable.person_placeholder)
                                 .placeholder(new ColorDrawable(Color.WHITE))
-                                .into(ivAuthor);
-
-                        Log.e(TAG, "onResponse: step 3");
+                                .into(mIvAuthor);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -531,7 +479,6 @@ public class DetailActivity extends AppCompatActivity {
                     }
 
                 } else {
-
                     Log.e(TAG, "onResponseNotSuccessful: DetailActivity");
 
                     Toast.makeText(
@@ -540,9 +487,9 @@ public class DetailActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT)
                             .show();
 
-                    fabMenu.hideMenuButton(false);
-                    progressBar.setVisibility(View.GONE);
-                    shouldReplace.setVisibility(View.GONE);
+                    mFabMenu.hideMenuButton(false);
+                    mProgressBar.setVisibility(View.GONE);
+                    mShouldReplace.setVisibility(View.GONE);
                 }
             }
 
@@ -551,9 +498,10 @@ public class DetailActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure: DetailActivity");
                 t.printStackTrace();
 
-                fabMenu.hideMenuButton(false);
-                shouldReplace.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
+                mFabMenu.hideMenuButton(false);
+                mShouldReplace.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+
                 Toast.makeText(getApplicationContext(),
                         getString(R.string.no_internet),
                         Toast.LENGTH_SHORT)
@@ -563,36 +511,32 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void lookUpAuthor() {
-        ivAuthor.setOnClickListener(new View.OnClickListener() {
+        mIvAuthor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DetailActivity.this, DetailAuthorActivity.class);
-
-                intent.putExtra("user_id", user_id);
-                intent.putExtra("name", name);
-                intent.putExtra("user_name", username);
-                intent.putExtra("profile_image_small", profile_small);
-                intent.putExtra("profile_image_large", profile_large);
-                intent.putExtra("location", user_location);
-                intent.putExtra("bio", bio);
-
+                intent.putExtra("user_id", mUserId);
+                intent.putExtra("name", mName);
+                intent.putExtra("user_name", mUsername);
+                intent.putExtra("profile_image_small", mProfileSmall);
+                intent.putExtra("profile_image_large", mProfileLarge);
+                intent.putExtra("location", mUserLocation);
+                intent.putExtra("bio", mBio);
                 startActivity(intent);
             }
         });
 
-        tvAuthor.setOnClickListener(new View.OnClickListener() {
+        mTvAuthor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DetailActivity.this, DetailAuthorActivity.class);
-
-                intent.putExtra("user_id", user_id);
-                intent.putExtra("name", name);
-                intent.putExtra("user_name", username);
-                intent.putExtra("profile_image_small", profile_small);
-                intent.putExtra("profile_image_large", profile_large);
-                intent.putExtra("location", user_location);
-                intent.putExtra("bio", bio);
-
+                intent.putExtra("user_id", mUserId);
+                intent.putExtra("name", mName);
+                intent.putExtra("user_name", mUsername);
+                intent.putExtra("profile_image_small", mProfileSmall);
+                intent.putExtra("profile_image_large", mProfileLarge);
+                intent.putExtra("location", mUserLocation);
+                intent.putExtra("bio", mBio);
                 startActivity(intent);
             }
         });
@@ -603,8 +547,8 @@ public class DetailActivity extends AppCompatActivity {
         return !(darkness < 0.5);
     }
 
-    private void onFABInfoClick() {
-        fabMenu.close(true);
+    private void onFabInfoClick() {
+        mFabMenu.close(true);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
         View dView = getLayoutInflater().inflate(R.layout.dialog_info, null);
@@ -618,47 +562,42 @@ public class DetailActivity extends AppCompatActivity {
         TextView tvFocal = dView.findViewById(R.id.dialog_info_tv_focallength);
         TextView tvViews = dView.findViewById(R.id.dialog_info_tv_views);
 
-        String unknow = getString(R.string.unknown).toLowerCase();
+        String unknown = getString(R.string.unknown).toLowerCase();
 
-        if (make == null || make.equals("null"))
-            tvMake.append(" ".concat(unknow));
-        else tvMake.append(" ".concat(make));
+        if (mMake == null || mMake.equals("null")) tvMake.append(" ".concat(unknown));
+        else tvMake.append(" ".concat(mMake));
 
-        if (model == null || model.equals("null"))
-            tvModel.append(" ".concat(unknow));
-        else tvModel.append(" ".concat(model));
+        if (mModel == null || mModel.equals("null")) tvModel.append(" ".concat(unknown));
+        else tvModel.append(" ".concat(mModel));
 
-        if (exposure_time == null || exposure_time.equals("null"))
-            tvExposure.append(" ".concat(unknow));
-        else tvExposure.append(" ".concat(exposure_time));
+        if (mExposureTime == null || mExposureTime.equals("null"))
+            tvExposure.append(" ".concat(unknown));
+        else tvExposure.append(" ".concat(mExposureTime));
 
-        if (aperture == null || aperture.equals("null"))
-            tvAperture.append(" ".concat(unknow));
-        else tvAperture.append(" ".concat(aperture));
+        if (mAperture == null || mAperture.equals("null")) tvAperture.append(" ".concat(unknown));
+        else tvAperture.append(" ".concat(mAperture));
 
-        if (iso == null || iso.equals("null"))
-            tvIso.append(" ".concat(unknow));
-        else tvIso.append(" ".concat(iso));
+        if (mIso == null || mIso.equals("null")) tvIso.append(" ".concat(unknown));
+        else tvIso.append(" ".concat(mIso));
 
-        if (focal_length == null || focal_length.equals("null"))
-            tvFocal.append(" ".concat(unknow));
-        else tvFocal.append(" ".concat(focal_length));
+        if (mFocalLength == null || mFocalLength.equals("null"))
+            tvFocal.append(" ".concat(unknown));
+        else tvFocal.append(" ".concat(mFocalLength));
 
-        tvDimens.append(" ".concat(beautyFormatter(width).concat(" x ").concat(beautyFormatter(height))));
+        tvDimens.append(" ".concat(beautyFormatter(mWidth).concat(" x ").concat(beautyFormatter(mHeight))));
 
-        if (views < 2) {
-            tvViews.setText(String.valueOf(views).concat(" ".concat(getString(R.string.single_view))));
-        } else {
-            tvViews.setText(beautyFormatter(views).concat(" ".concat(getString(R.string.non_single_view))));
-        }
+        if (mViews < 2)
+            tvViews.setText(String.valueOf(mViews).concat(" ".concat(getString(R.string.single_view))));
+        else
+            tvViews.setText(beautyFormatter(mViews).concat(" ".concat(getString(R.string.non_single_view))));
 
-        Log.e(TAG, "make: " + make);
-        Log.e(TAG, "model: " + model);
-        Log.e(TAG, "exposure_time: " + exposure_time);
-        Log.e(TAG, "aperture: " + aperture);
-        Log.e(TAG, "focal_length: " + focal_length);
-        Log.e(TAG, "iso: " + iso);
-        Log.e(TAG, "w x h: " + width + " x " + height);
+        Log.e(TAG, "make: " + mMake);
+        Log.e(TAG, "model: " + mModel);
+        Log.e(TAG, "exposure_time: " + mExposureTime);
+        Log.e(TAG, "aperture: " + mAperture);
+        Log.e(TAG, "focal_length: " + mFocalLength);
+        Log.e(TAG, "iso: " + mIso);
+        Log.e(TAG, "w x h: " + mWidth + " x " + mHeight);
 
         builder.setView(dView);
         AlertDialog alertDialog = builder.create();
@@ -667,30 +606,30 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void onFABSetWallpaperClick() {
-        fabMenu.close(true);
+        mFabMenu.close(true);
 
-        progressDialog = new ProgressDialog(DetailActivity.this);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle("Setting wallpaper...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setProgressNumberFormat(null);
-        progressDialog.setProgressPercentFormat(null);
-        progressDialog.setCancelable(true);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();
+        mProgressDialog = new ProgressDialog(DetailActivity.this);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setTitle("Setting up wallpaper...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setProgressNumberFormat(null);
+        mProgressDialog.setProgressPercentFormat(null);
+        mProgressDialog.setCancelable(true);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
 
         Glide.with(DetailActivity.this)
                 .asBitmap()
-                .load(full)
+                .load(mFullResolution)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(
                             @NonNull Bitmap resource,
                             @Nullable Transition<? super Bitmap> transition) {
 
-                        uri = getBitmapUri(DetailActivity.this, resource);
+                        mUri = getBitmapUri(DetailActivity.this, resource);
                         Log.e(TAG, "bitmap: " + resource);
-                        setWallpaper(uri, progressDialog);
+                        setWallpaper(mUri, mProgressDialog);
                     }
 
                     @Override
@@ -718,14 +657,14 @@ public class DetailActivity extends AppCompatActivity {
 
                 Log.e(TAG, "onRequestPermissionsResult: GRANTED");
 
-                switch (permission) {
+                switch (mPermission) {
                     case 1:
-                        fabMenu.close(true);
-                        downloadId = beginDownload(Uri.parse(download_links), imageId);
+                        mFabMenu.close(true);
+                        mDownloadId = beginDownload(Uri.parse(mDownloadLinks), mImageId);
 
                         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
                         registerReceiver(broadcastReceiver, filter);
-                        unreg = true;
+                        mUnreg = true;
                         break;
                     case 2:
                         onFABSetWallpaperClick();
@@ -747,26 +686,68 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             Log.e(TAG, "onRequestPermissionsResult: ");
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         }
+    }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.info_item:
+                onFabInfoClick();
+                break;
+            case R.id.share_item:
+                shareImage();
+                break;
+            case R.id.download_item:
+                if (!checkPermission()) {
+                    requestPermission();
+                    mPermission = 1;
+                    if (checkPermission()) {
+                        mFabMenu.close(true);
+                        mDownloadId = beginDownload(Uri.parse(mDownloadLinks), mImageId);
+
+                        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+                        registerReceiver(broadcastReceiver, filter);
+                        mUnreg = true;
+                    }
+                } else {
+                    mFabMenu.close(true);
+                    mDownloadId = beginDownload(Uri.parse(mDownloadLinks), mImageId);
+
+                    IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+                    registerReceiver(broadcastReceiver, filter);
+                    mUnreg = true;
+                }
+                break;
+            case R.id.set_wallpaper_item:
+                if (!checkPermission()) {
+                    requestPermission();
+                    mPermission = 2;
+                    if (checkPermission()) {
+                        onFABSetWallpaperClick();
+                    }
+                } else {
+                    onFABSetWallpaperClick();
+                }
+                break;
+            case R.id.browse_item:
+                mFabMenu.close(true);
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mHtml + UTM_PARAM));
+                startActivity(webIntent);
+                break;
+        }
     }
 
     @Override
     public void onBackPressed() {
-        if (fabMenu.isOpened()) {
-            fabMenu.close(true);
-        } else {
-            super.onBackPressed();
-        }
+        if (mFabMenu.isOpened()) mFabMenu.close(true);
+        else super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (unreg) {
-            unregisterReceiver(broadcastReceiver);
-        }
+        if (mUnreg) unregisterReceiver(broadcastReceiver);
     }
 
     public String beautyFormatter(int toFormat) {

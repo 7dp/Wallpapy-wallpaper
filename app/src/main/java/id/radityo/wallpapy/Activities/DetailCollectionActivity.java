@@ -31,12 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.radityo.wallpapy.Activities.DetailAuthor.DetailAuthorActivity;
-import id.radityo.wallpapy.MyFragment.New.Model.Author.Author;
-import id.radityo.wallpapy.MyFragment.New.Model.Author.AuthorLinks;
-import id.radityo.wallpapy.MyFragment.New.Model.Author.AuthorProfile;
-import id.radityo.wallpapy.MyFragment.New.Model.New;
-import id.radityo.wallpapy.MyFragment.New.Model.Urls;
-import id.radityo.wallpapy.MyFragment.New.NewAdapter;
+import id.radityo.wallpapy.Fragments.New.Model.Author.Author;
+import id.radityo.wallpapy.Fragments.New.Model.Author.AuthorLinks;
+import id.radityo.wallpapy.Fragments.New.Model.Author.AuthorProfile;
+import id.radityo.wallpapy.Fragments.New.Model.New;
+import id.radityo.wallpapy.Fragments.New.Model.Urls;
+import id.radityo.wallpapy.Fragments.New.NewAdapter;
 import id.radityo.wallpapy.R;
 import id.radityo.wallpapy.Request.APIService;
 import id.radityo.wallpapy.Request.ApiClient;
@@ -46,105 +46,120 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static id.radityo.wallpapy.Constants.CLIENT_ID;
+import static id.radityo.wallpapy.Utils.Cons.CLIENT_ID;
 
 public class DetailCollectionActivity extends AppCompatActivity {
 
     public static final String TAG = "wallpapy";
-    private int collectionId;
-    private String authorMed;
-    private String authorName;
-    private String collTitle;
-    private String user_id;
-    private String username;
-    private String profile_small;
-    private String profile_large;
-    private String user_location;
-    private String bio;
-    private String description;
+    private int mCollectionId;
+    private String mAuthorMedium;
+    private String mAuthorName;
+    private String mCollectionTitle;
+    private String mUserId;
+    private String mUsername;
+    private String mProfileSmall;
+    private String mProfileLarge;
+    private String mUserLocation;
+    private String mBio;
+    private String mDescription;
 
-    Toolbar toolbar;
-    ImageView ivAuthor;
-    TextView tvAuthor, tvCollectionName;
-    SwipeRefreshLayout swipeRefresh;
-    LinearLayout linearOffline, containerAuthor;
-    ProgressBar progressBar;
-    RecyclerView recyclerView;
+    Toolbar mToolbar;
+    ImageView mIvAuthor;
+    TextView mTvAuthor, mTvCollectionName;
+    SwipeRefreshLayout mSwipeRefresh;
+    LinearLayout mLinearNetwork, mContainerAuthor;
+    ProgressBar mProgressBar;
+    RecyclerView mRecyclerView;
 
-    List<New> newList = new ArrayList<>();
-    NewAdapter newAdapter;
-    EndlessOnScrollListener endlessScrollListener;
+    List<New> mNewList = new ArrayList<>();
+    NewAdapter mNewAdapter;
+    EndlessOnScrollListener mEndlessScrollListener = null;
 
-    private void findViewById() {
-        toolbar = findViewById(R.id.toolbar_detail_collection);
-        recyclerView = findViewById(R.id.recycler_detail_collections);
-        swipeRefresh = findViewById(R.id.refresh_detail_collection);
-        linearOffline = findViewById(R.id.linear_internet_detail_collection);
-        containerAuthor = findViewById(R.id.container_author_collection_detail);
-        progressBar = findViewById(R.id.progress_detail_collection);
-        ivAuthor = findViewById(R.id.iv_author_collection);
-        tvAuthor = findViewById(R.id.tv_author_detail_collection);
-        tvCollectionName = findViewById(R.id.tv_collection_detail_name);
+    private void initView() {
+        mToolbar = findViewById(R.id.toolbar_detail_collection);
+        mRecyclerView = findViewById(R.id.recycler_detail_collections);
+        mSwipeRefresh = findViewById(R.id.refresh_detail_collection);
+        mLinearNetwork = findViewById(R.id.linear_internet_detail_collection);
+        mContainerAuthor = findViewById(R.id.container_author_collection_detail);
+        mProgressBar = findViewById(R.id.progress_detail_collection);
+        mIvAuthor = findViewById(R.id.iv_author_collection);
+        mTvAuthor = findViewById(R.id.tv_author_detail_collection);
+        mTvCollectionName = findViewById(R.id.tv_collection_detail_name);
     }
 
-    private void setView() {
-        setSupportActionBar(toolbar);
+    private void initToolbar() {
+        setSupportActionBar(mToolbar);
         ActionBar t = getSupportActionBar();
         t.setDisplayShowTitleEnabled(false);
         t.setDisplayShowHomeEnabled(true);
         t.setDisplayHomeAsUpEnabled(true);
         t.setHomeAsUpIndicator(R.drawable.ic_back_black_24);
+    }
 
-        linearOffline.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.GONE);
+    private void setDefaultProperties() {
+        mLinearNetwork.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
 
-        tvAuthor.setText(authorName);
-        tvCollectionName.setText(collTitle);
-        tvAuthor.setSelected(true);
-        tvCollectionName.setSelected(true);
+        mTvAuthor.setSelected(true);
+        mTvCollectionName.setSelected(true);
+        mTvAuthor.setText(mAuthorName);
+        mTvCollectionName.setText(mCollectionTitle);
 
         Glide.with(this)
-                .load(authorMed)
-                .transition(DrawableTransitionOptions.withCrossFade())
+                .load(mAuthorMedium)
+                .transition(DrawableTransitionOptions.withCrossFade(500))
                 .fallback(new ColorDrawable(Color.GRAY))
                 .error(new ColorDrawable(Color.WHITE))
                 .circleCrop()
-                .into(ivAuthor);
+                .into(mIvAuthor);
 
-        containerAuthor.setOnClickListener(new View.OnClickListener() {
+        mContainerAuthor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(DetailCollectionActivity.this, DetailAuthorActivity.class);
-                intent.putExtra("user_id", user_id);
-                intent.putExtra("name", authorName);
-                intent.putExtra("user_name", username);
-                intent.putExtra("profile_image_small", profile_small);
-                intent.putExtra("profile_image_large", profile_large);
-                intent.putExtra("location", user_location);
-                intent.putExtra("author_med", authorMed);
-                intent.putExtra("bio", bio);
+                intent.putExtra("user_id", mUserId);
+                intent.putExtra("name", mAuthorName);
+                intent.putExtra("user_name", mUsername);
+                intent.putExtra("profile_image_small", mProfileSmall);
+                intent.putExtra("profile_image_large", mProfileLarge);
+                intent.putExtra("location", mUserLocation);
+                intent.putExtra("author_med", mAuthorMedium);
+                intent.putExtra("bio", mBio);
                 startActivity(intent);
             }
         });
     }
 
     private void initRecyclerView() {
-        recyclerView.setLayoutManager(new GridLayoutManager(DetailCollectionActivity.this, 2));
-        recyclerView.setMotionEventSplittingEnabled(false);
-        recyclerView.setHasFixedSize(true);
-        newAdapter = new NewAdapter(DetailCollectionActivity.this, newList);
-        recyclerView.setAdapter(newAdapter);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(DetailCollectionActivity.this, 2));
+        mRecyclerView.setMotionEventSplittingEnabled(false);
+        mRecyclerView.setHasFixedSize(true);
+        mNewAdapter = new NewAdapter(this, mNewList);
+        mRecyclerView.setAdapter(mNewAdapter);
 
-        endlessScrollListener = new EndlessOnScrollListener() {
+        mEndlessScrollListener = new EndlessOnScrollListener() {
             @Override
             public void onLoadMore(int page) {
-                Log.e(TAG, "onLoadMore: page -> " + page);
-                requestCollectionPhotos(collectionId, page, CLIENT_ID);
+                requestCollectionPhotos(mCollectionId, page, CLIENT_ID);
             }
         };
 
-        recyclerView.addOnScrollListener(endlessScrollListener);
+        mRecyclerView.addOnScrollListener(mEndlessScrollListener);
+    }
+
+    private void obtainDataFromIntent() {
+        Intent i = getIntent();
+        mCollectionId = i.getIntExtra("collection_id", -1);
+        mAuthorName = i.getStringExtra("author_name");
+        mAuthorMedium = i.getStringExtra("author_medium");
+        mCollectionTitle = i.getStringExtra("title");
+        mUserId = i.getStringExtra("user_id");
+        mUsername = i.getStringExtra("user_name");
+        mProfileSmall = i.getStringExtra("profile_image_small");
+        mProfileLarge = i.getStringExtra("profile_image_large");
+        mUserLocation = i.getStringExtra("location");
+        mBio = i.getStringExtra("bio");
+        mDescription = i.getStringExtra("desc");
     }
 
     @Override
@@ -158,38 +173,29 @@ public class DetailCollectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_collection);
 
-        Intent i = getIntent();
-        collectionId = i.getIntExtra("collection_id", -1);
-        authorName = i.getStringExtra("author_name");
-        authorMed = i.getStringExtra("author_medium");
-        collTitle = i.getStringExtra("title");
-        user_id = i.getStringExtra("user_id");
-        username = i.getStringExtra("user_name");
-        profile_small = i.getStringExtra("profile_image_small");
-        profile_large = i.getStringExtra("profile_image_large");
-        user_location = i.getStringExtra("location");
-        bio = i.getStringExtra("bio");
-        description = i.getStringExtra("desc");
+        obtainDataFromIntent();
 
-        Log.e(TAG, "collectionId: " + collectionId);
-        Log.e(TAG, "collectionTitle: " + collTitle);
-        Log.e(TAG, "authorName: " + authorName);
-        Log.e(TAG, "authorMed: " + authorMed);
-        Log.e(TAG, "collTitle: " + collTitle);
-        Log.e(TAG, "user_id: " + user_id);
-        Log.e(TAG, "username: " + username);
-        Log.e(TAG, "profile_medium: " + profile_small);
-        Log.e(TAG, "profile_large: " + profile_large);
-        Log.e(TAG, "user_location: " + user_location);
-        Log.e(TAG, "bio: " + bio);
+        Log.e(TAG, "mCollectionId: " + mCollectionId);
+        Log.e(TAG, "collectionTitle: " + mCollectionTitle);
+        Log.e(TAG, "mAuthorName: " + mAuthorName);
+        Log.e(TAG, "mAuthorMedium: " + mAuthorMedium);
+        Log.e(TAG, "mCollectionTitle: " + mCollectionTitle);
+        Log.e(TAG, "mUserId: " + mUserId);
+        Log.e(TAG, "mUsername: " + mUsername);
+        Log.e(TAG, "profile_medium: " + mProfileSmall);
+        Log.e(TAG, "mProfileLarge: " + mProfileLarge);
+        Log.e(TAG, "mUserLocation: " + mUserLocation);
+        Log.e(TAG, "mBio: " + mBio);
 
-        findViewById();
+        initView();
 
-        setView();
+        initToolbar();
+
+        setDefaultProperties();
 
         initRecyclerView();
 
-        requestCollectionPhotos(collectionId, 1, CLIENT_ID);
+        requestCollectionPhotos(mCollectionId, 1, CLIENT_ID);
 
         pullToRefresh();
     }
@@ -203,10 +209,10 @@ public class DetailCollectionActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     try {
 
-                        swipeRefresh.setRefreshing(false);
-                        recyclerView.setVisibility(View.VISIBLE);
-                        linearOffline.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.GONE);
+                        mSwipeRefresh.setRefreshing(false);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        mLinearNetwork.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
 
                         JSONArray array = new JSONArray(response.body().string());
 
@@ -227,18 +233,9 @@ public class DetailCollectionActivity extends AppCompatActivity {
                             JSONObject urlsObj = rootObject.getJSONObject("urls");
                             String regular = urlsObj.getString("regular");
 
-                            // LINKS
-                            JSONObject linksObj = rootObject.getJSONObject("links");
-
                             // USER
                             JSONObject userObj = rootObject.getJSONObject("user");
                             String name = userObj.getString("name");
-//                            String instagram = userObj.getString("instagram_username");
-//                            int total_collections = userObj.getInt("total_collections");
-//                            int total_likes = userObj.getInt("total_likes");
-//                            int total_photos = userObj.getInt("total_photos");
-//                            int accepted_tos = userObj.getInt("accepted_tos");
-
 
                             // user links
                             JSONObject userLinksObj = userObj.getJSONObject("links");
@@ -287,10 +284,10 @@ public class DetailCollectionActivity extends AppCompatActivity {
                             anew.setAuthor(author);
                             anew.setUrls(urls);
 
-                            newList.add(anew);
+                            mNewList.add(anew);
                         }
 
-                        newAdapter.notifyDataSetChanged();
+                        mNewAdapter.notifyDataSetChanged();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -307,10 +304,10 @@ public class DetailCollectionActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT)
                             .show();
 
-                    recyclerView.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
-                    linearOffline.setVisibility(View.GONE);
-                    swipeRefresh.setRefreshing(false);
+                    mRecyclerView.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mLinearNetwork.setVisibility(View.GONE);
+                    mSwipeRefresh.setRefreshing(false);
 
                     pullToRefresh();
                 }
@@ -327,10 +324,10 @@ public class DetailCollectionActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT)
                         .show();
 
-                recyclerView.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-                linearOffline.setVisibility(View.VISIBLE);
-                swipeRefresh.setRefreshing(false);
+                mRecyclerView.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                mLinearNetwork.setVisibility(View.VISIBLE);
+                mSwipeRefresh.setRefreshing(false);
 
                 pullToRefresh();
             }
@@ -338,19 +335,19 @@ public class DetailCollectionActivity extends AppCompatActivity {
     }
 
     private void pullToRefresh() {
-        swipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                progressBar.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.GONE);
-                linearOffline.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.GONE);
+                mLinearNetwork.setVisibility(View.GONE);
 
-                endlessScrollListener.resetState();
-                newList.clear();
-                newAdapter.notifyDataSetChanged();
+                mEndlessScrollListener.resetState();
+                mNewList.clear();
+                mNewAdapter.notifyDataSetChanged();
 
-                requestCollectionPhotos(collectionId, 1, CLIENT_ID);
+                requestCollectionPhotos(mCollectionId, 1, CLIENT_ID);
             }
         });
     }

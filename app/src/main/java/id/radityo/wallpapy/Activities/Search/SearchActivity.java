@@ -13,27 +13,27 @@ import android.support.v7.widget.Toolbar;
 import id.radityo.wallpapy.R;
 
 public class SearchActivity extends AppCompatActivity {
-    private static final String TAG = "wallpapy";
     public static final String QUERY = "query";
 
-    private SearchView searchView;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private Toolbar toolbar;
-    private PagerAdapter pagerAdapter = null;
-    private TabSearchPhotos tabSearchPhotos = new TabSearchPhotos();
-    private TabSearchUser tabSearchUser = new TabSearchUser();
-    private TabSearchCollections tabSearchCollections = new TabSearchCollections();
+    private SearchView mSearchView;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private Toolbar mToolbar;
+
+    private TabSearchPhotos mTabSearchPhotos = new TabSearchPhotos();
+    private TabSearchUser mTabSearchUser = new TabSearchUser();
+    private TabSearchCollections mTabSearchCollections = new TabSearchCollections();
+    private PagerAdapter mPagerAdapter = null;
 
     private void initView() {
-        toolbar = findViewById(R.id.toolbar_search);
-        searchView = findViewById(R.id.search_view);
-        tabLayout = findViewById(R.id.tab_layout_search);
-        viewPager = findViewById(R.id.view_pager_search);
+        mToolbar = findViewById(R.id.toolbar_search);
+        mSearchView = findViewById(R.id.search_view);
+        mTabLayout = findViewById(R.id.tab_layout_search);
+        mViewPager = findViewById(R.id.view_pager_search);
     }
 
     private void initToolbar() {
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(false);
         ab.setDisplayHomeAsUpEnabled(true);
@@ -45,7 +45,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
 
         initView();
 
@@ -53,18 +53,16 @@ public class SearchActivity extends AppCompatActivity {
 
         initTabAndViewPager();
 
-        searchView.requestFocus();
+        mSearchView.requestFocus();
         SearchView.SearchAutoComplete searchAutoComplete
-                = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+                = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchAutoComplete.setHintTextColor(getResources().getColor(R.color.white70));
         searchAutoComplete.setTextColor(Color.WHITE);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-                searchView.clearFocus();
-
+                mSearchView.clearFocus();
                 Intent intent = new Intent(QUERY);
                 intent.putExtra(QUERY, query);
                 sendBroadcast(intent);
@@ -80,19 +78,17 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void initTabAndViewPager() {
-        pagerAdapter.addFragment(tabSearchPhotos);
-        pagerAdapter.addFragment(tabSearchUser);
-        pagerAdapter.addFragment(tabSearchCollections);
+        mPagerAdapter.addFragment(mTabSearchPhotos);
+        mPagerAdapter.addFragment(mTabSearchUser);
+        mPagerAdapter.addFragment(mTabSearchCollections);
 
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(2);
-
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tabLayout.getSelectedTabPosition());
+                mViewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
