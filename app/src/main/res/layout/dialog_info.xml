@@ -18,7 +18,7 @@
         android:drawablePadding="@dimen/text_margin"
         android:gravity="center_vertical"
         android:text="@string/dimensions"
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="@style/TextAppearanceMediumSmall"
         android:textColor="@android:color/black" />
 
     <TextView
@@ -30,7 +30,7 @@
         android:drawablePadding="@dimen/text_margin"
         android:gravity="center_vertical"
         android:text="@string/make"
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="@style/TextAppearanceMediumSmall"
         android:textColor="@android:color/black" />
 
     <TextView
@@ -42,7 +42,7 @@
         android:drawablePadding="@dimen/text_margin"
         android:gravity="center_vertical"
         android:text="@string/model"
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="@style/TextAppearanceMediumSmall"
         android:textColor="@android:color/black" />
 
     <TextView
@@ -54,7 +54,7 @@
         android:drawablePadding="@dimen/text_margin"
         android:gravity="center_vertical"
         android:text="@string/exposure_time"
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="@style/TextAppearanceMediumSmall"
         android:textColor="@android:color/black" />
 
     <TextView
@@ -66,7 +66,7 @@
         android:drawablePadding="@dimen/text_margin"
         android:gravity="center_vertical"
         android:text="@string/aperture"
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="@style/TextAppearanceMediumSmall"
         android:textColor="@android:color/black" />
 
     <TextView
@@ -78,7 +78,7 @@
         android:drawablePadding="@dimen/text_margin"
         android:gravity="center_vertical"
         android:text="@string/iso"
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="@style/TextAppearanceMediumSmall"
         android:textColor="@android:color/black" />
 
     <TextView
@@ -90,7 +90,7 @@
         android:drawablePadding="@dimen/text_margin"
         android:gravity="center_vertical"
         android:text="@string/focal_length"
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="@style/TextAppearanceMediumSmall"
         android:textColor="@android:color/black" />
 
     <TextView
@@ -101,7 +101,7 @@
         android:drawableStart="@drawable/ic_eye_24"
         android:drawablePadding="@dimen/text_margin"
         android:gravity="center_vertical"
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="@style/TextAppearanceMediumSmall"
         android:textColor="@android:color/black"
         tools:text="@string/non_single_view" />
 

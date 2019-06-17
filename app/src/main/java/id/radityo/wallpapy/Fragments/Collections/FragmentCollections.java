@@ -65,7 +65,7 @@ public class FragmentCollections extends Fragment {
 
     private void initViewById(View view) {
         mRecyclerView = view.findViewById(R.id.recycler_collections);
-        mLinearLayout = view.findViewById(R.id.linear_internet_collections);
+        mLinearLayout = view.findViewById(R.id.offline_fragment_collection);
         mProgressBar = view.findViewById(R.id.progress_collections);
         mSwipeRefresh = view.findViewById(R.id.refresh_collections);
 

@@ -13,7 +13,7 @@
     <string name="category">Category</string>
     <string name="server_error">Server error, try again later</string>
     <string name="title_activity_detail">DetailActivity</string>
-    <string name="no_internet">There is a problem with your connection</string>
+    <string name="no_internet">Oops, your connection seems off…</string>
     <string name="single">Photo</string>
     <string name="non_single">Photos</string>
     <string name="large_text">
@@ -105,7 +105,7 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a author tries to pick up one of cards.\n\n"
     </string>
-    <string name="to_refresh">Swipe down to refresh</string>
+    <string name="to_refresh">Keep calm, check your connection\n and pull to refresh to try again</string>
     <string name="portrait">Portrait</string>
     <string name="landscape">Landscape</string>
     <string name="search">Search</string>
@@ -134,7 +134,7 @@
     <string name="collections">collections</string>
     <string name="likes">likes</string>
     <string name="users">users</string>
-    <string name="search_something">Search something…</string>
+    <string name="search_something">You can search anything\n included photos, users and collections</string>
     <string name="share">Share</string>
     <string name="newf">New</string>
     <string name="featuredf">Featured</string>

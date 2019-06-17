@@ -67,7 +67,7 @@ public class FragmentFeatured extends Fragment {
     private void initViewById(View view) {
         mSwipeRefresh = view.findViewById(R.id.refresh_random);
         mRecyclerView = view.findViewById(R.id.recycler_random);
-        mLinearLayout = view.findViewById(R.id.linear_internet_random);
+        mLinearLayout = view.findViewById(R.id.offline_fragment_featured);
         mProgressBar = view.findViewById(R.id.progress_random);
 
         mLinearLayout.setVisibility(View.GONE);

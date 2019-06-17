@@ -84,7 +84,7 @@ public class TabUserLikes extends Fragment {
 
     private void initView(View view) {
         mRecyclerView = view.findViewById(R.id.recycler_tab_photos);
-        mLayoutNetwork = view.findViewById(R.id.linear_internet_tab_photos);
+        mLayoutNetwork = view.findViewById(R.id.search_layout_tab_photos);
         mSwipeRefresh = view.findViewById(R.id.refresh_tab_photos);
         mProgressBar = view.findViewById(R.id.progress_tab_photos);
         mTvEmpty = view.findViewById(R.id.tv_empty_tab_photos);

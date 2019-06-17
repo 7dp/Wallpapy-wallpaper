@@ -65,7 +65,7 @@ public class FragmentNew extends Fragment {
         mRecyclerView = view.findViewById(R.id.recycler_latest);
         mProgressBar = view.findViewById(R.id.progress_new);
         mSwipeRefresh = view.findViewById(R.id.refresh_latest);
-        mLinearLayout = view.findViewById(R.id.linear_internet_latest);
+        mLinearLayout = view.findViewById(R.id.offline_fragment_new);
 
         mRecyclerView.setVisibility(View.GONE);
         mLinearLayout.setVisibility(View.GONE);

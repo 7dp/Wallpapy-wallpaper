@@ -79,7 +79,7 @@ public class DetailCollectionActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar_detail_collection);
         mRecyclerView = findViewById(R.id.recycler_detail_collections);
         mSwipeRefresh = findViewById(R.id.refresh_detail_collection);
-        mLinearNetwork = findViewById(R.id.linear_internet_detail_collection);
+        mLinearNetwork = findViewById(R.id.offline_detail_collection);
         mContainerAuthor = findViewById(R.id.container_author_collection_detail);
         mProgressBar = findViewById(R.id.progress_detail_collection);
         mIvAuthor = findViewById(R.id.iv_author_collection);
