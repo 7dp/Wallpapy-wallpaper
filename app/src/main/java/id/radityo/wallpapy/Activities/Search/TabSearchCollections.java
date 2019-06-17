@@ -62,13 +62,13 @@ public class TabSearchCollections extends Fragment {
 
     private void initView(View view) {
         mRecyclerView = view.findViewById(R.id.recycler_tab_photos);
-        mLayoutNetwork = view.findViewById(R.id.search_layout_tab_photos);
-        mLayoutSearch = view.findViewById(R.id.linear_search_tab_photos);
+//        mLayoutNetwork = view.findViewById(R.id.search_layout_tab_photos);
+        mLayoutSearch = view.findViewById(R.id.search_layout_tab_photos);
         mSwipeRefresh = view.findViewById(R.id.refresh_tab_photos);
         mProgressBar = view.findViewById(R.id.progress_tab_photos);
 
         mProgressBar.setVisibility(View.GONE);
-        mLayoutNetwork.setVisibility(View.GONE);
+//        mLayoutNetwork.setVisibility(View.GONE);
         mLayoutSearch.setVisibility(View.VISIBLE);
         mSwipeRefresh.setEnabled(false);
     }
