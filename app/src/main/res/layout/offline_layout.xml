@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="0.9"
     android:background="@android:color/white"
     android:gravity="center"
     android:orientation="vertical"
@@ -11,7 +10,9 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:scaleType="centerCrop"
+        android:layout_weight="1.25"
+        android:alpha="0.8"
         android:background="@android:color/transparent"
         android:contentDescription="@null"
         android:src="@drawable/connection_problem" />
@@ -19,8 +20,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
+        android:layout_weight="0.5"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView

@@ -109,6 +109,7 @@
     <string name="portrait">Portrait</string>
     <string name="landscape">Landscape</string>
     <string name="search">Search</string>
+    <string name="search_hint">Search here</string>
     <string name="sort_by">Sort By</string>
 
     <string name="fab_stats">Statistic</string>

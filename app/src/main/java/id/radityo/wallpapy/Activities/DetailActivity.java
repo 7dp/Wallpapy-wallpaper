@@ -200,7 +200,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     // FAB actions
     private void setupFloatingActionButton() {
         mFabMenu.setClosedOnTouchOutside(true);
-        mFabMenu.setAnimationDelayPerItem(0);
+        mFabMenu.setAnimationDelayPerItem(30);
 
         mFabInfo.setOnClickListener(this);
         mFabDownload.setOnClickListener(this);

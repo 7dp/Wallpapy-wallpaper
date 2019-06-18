@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        android:scaleX="0.8"
-        android:scaleY="0.8"
+        android:scaleX="0.9"
+        android:scaleY="0.9"
         android:src="@drawable/search_image" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="0.7"
+        android:alpha="0.6"
         android:gravity="center_horizontal"
         android:text="@string/search_something"
         android:textAppearance="?android:textAppearanceMedium"

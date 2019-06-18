@@ -16,19 +16,20 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:theme="@style/ToolbarTheme"
-            app:elevation="8dp"
+            app:elevation="10dp"
+            app:contentInsetStartWithNavigation="-16dp"
+            app:contentInsetEnd="@dimen/bb_default_elevation"
             app:layout_scrollFlags="enterAlways|scroll|snap"
             app:theme="@style/ToolbarTheme">
 
             <android.support.v7.widget.SearchView
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:defaultQueryHint="@string/search"
+                android:layout_height="40dp"
+                app:defaultQueryHint="@string/search_hint"
                 app:iconifiedByDefault="false"
-                app:queryBackground="@null"
                 app:searchIcon="@null"
-                app:submitBackground="@null" />
+                app:queryBackground="@drawable/search_bg" />
 
         </android.support.v7.widget.Toolbar>
 
