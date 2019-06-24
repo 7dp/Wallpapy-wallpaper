@@ -1,8 +1,10 @@
 package id.radityo.wallpapy.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
@@ -67,6 +69,13 @@ public class MyIntroActivity extends AppIntro {
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
+
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(MyIntroActivity.this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(FIRST_LAUNCH_KEY, false);
+        editor.apply();
+
         Intent getStarted = new Intent(this, MainActivity.class);
         startActivity(getStarted);
         finish();

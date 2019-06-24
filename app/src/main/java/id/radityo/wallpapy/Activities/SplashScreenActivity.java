@@ -25,7 +25,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 SharedPreferences preferences =
                         PreferenceManager.getDefaultSharedPreferences(SplashScreenActivity.this);
                 boolean isFirstLaunch = preferences.getBoolean(FIRST_LAUNCH_KEY, true);
-
                 if (isFirstLaunch) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -36,11 +35,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                             finish();
                         }
                     });
-
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putBoolean(FIRST_LAUNCH_KEY, false);
-                    editor.apply();
-
                 } else {
                     runOnUiThread(new Runnable() {
                         @Override
