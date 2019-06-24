@@ -1,6 +1,9 @@
 package id.radityo.wallpapy.Fragments.New;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,6 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static id.radityo.wallpapy.Utils.Cons.BROADCAST_NEW;
 import static id.radityo.wallpapy.Utils.Cons.CLIENT_ID;
 import static id.radityo.wallpapy.Utils.Cons.LATEST_NEW;
 import static id.radityo.wallpapy.Utils.Cons.OLDEST_NEW;
@@ -72,7 +76,7 @@ public class FragmentNew extends Fragment {
     }
 
     private void initRecyclerView() {
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, 2));
         mRecyclerView.setMotionEventSplittingEnabled(false);
         mRecyclerView.setHasFixedSize(true);
         mNewAdapter = new NewAdapter(getActivity(), mNewList);
@@ -114,6 +118,23 @@ public class FragmentNew extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mActivity.registerReceiver(mBroadcastReceiver, new IntentFilter(BROADCAST_NEW));
+    }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && intent.getAction().equals(BROADCAST_NEW)) {
+                GridLayoutManager glm = (GridLayoutManager) mRecyclerView.getLayoutManager();
+                glm.scrollToPositionWithOffset(0, 0);
+                mRecyclerView.stopScroll();
+            }
+        }
+    };
 
     private void requestAllPhotos(final String clientId, final int page, final String orderBy) {
         APIService service = ApiClient.getBaseUrl();
@@ -282,6 +303,10 @@ public class FragmentNew extends Fragment {
         requestAllPhotos(CLIENT_ID, 1, mSortBy);
         pullToRefresh(CLIENT_ID, mSortBy);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mActivity.unregisterReceiver(mBroadcastReceiver);
+    }
 }
-
-

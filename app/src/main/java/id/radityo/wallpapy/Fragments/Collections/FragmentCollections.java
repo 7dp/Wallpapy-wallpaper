@@ -1,6 +1,9 @@
 package id.radityo.wallpapy.Fragments.Collections;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,6 +48,7 @@ import retrofit2.Response;
 
 import static id.radityo.wallpapy.Fragments.New.FragmentNew.TAG;
 import static id.radityo.wallpapy.Utils.Cons.ALL;
+import static id.radityo.wallpapy.Utils.Cons.BROADCAST_COLLECTION;
 import static id.radityo.wallpapy.Utils.Cons.CLIENT_ID;
 import static id.radityo.wallpapy.Utils.Cons.CURATED;
 import static id.radityo.wallpapy.Utils.Cons.FEATURED;
@@ -116,6 +120,23 @@ public class FragmentCollections extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mActivity.registerReceiver(mBroadcastReceiver, new IntentFilter(BROADCAST_COLLECTION));
+    }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && intent.getAction().equals(BROADCAST_COLLECTION)) {
+                LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                llm.scrollToPositionWithOffset(0, 0);
+                mRecyclerView.stopScroll();
+            }
+        }
+    };
 
     private void requestCollections(final String clientId, final int page, final String orderBy) {
         APIService service = ApiClient.getBaseUrl();
@@ -334,5 +355,11 @@ public class FragmentCollections extends Fragment {
 
         requestCollections(CLIENT_ID, 1, mSortBy);
         pullToRefresh(CLIENT_ID, mSortBy);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mActivity.unregisterReceiver(mBroadcastReceiver);
     }
 }

@@ -16,7 +16,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeNoBar"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Activities.SplashScreenActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Activities.MyIntroActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Intro" />
         <activity
             android:name=".Activities.Search.SearchActivity"
             android:configChanges="orientation"
@@ -37,14 +52,8 @@
         <activity
             android:name=".Activities.MainActivity"
             android:configChanges="orientation"
-            android:theme="@style/AppThemeWithBar"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithBar" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

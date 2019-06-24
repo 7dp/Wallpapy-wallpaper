@@ -23,4 +23,16 @@
         app:ntb_title_mode="all"
         app:ntb_titled="true" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="@dimen/text_margin"
+        android:layout_marginBottom="@dimen/fab_margin_bottom"
+        app:elevation="6dp"
+        app:pressedTranslationZ="8dp"
+        app:rippleColor="@color/white30"
+        app:srcCompat="@drawable/ic_arrow_up_24" />
+
 </android.support.design.widget.CoordinatorLayout>

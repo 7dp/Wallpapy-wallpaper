@@ -152,4 +152,14 @@
     <string name="likes_empty">Likes is empty</string>
     <string name="on_unsplash">on Unsplash</string>
     <string name="browse">Browse</string>
+
+    <string name="title_one">Welcome to Wallpapy</string>
+    <string name="title_two">Find various photos</string>
+    <string name="title_three">Downloadable photos</string>
+    <string name="title_four">Share and set</string>
+
+    <string name="desc_one">With Wallpapy you can find out amazing image and photos</string>
+    <string name="desc_two">More than 1,000,000 free high-resolution photos from more than 140,000 photographers around the world</string>
+    <string name="desc_three">With curated and popular photos sort you can download any photos you want</string>
+    <string name="desc_four">Share with your friends and don\'t forget that you can set it as wallpaper!</string>
 </resources>

@@ -7,6 +7,7 @@
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photo_view_dialog"
         android:layout_width="match_parent"
+        android:transitionName="transitionFragment"
         android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -1,11 +1,13 @@
 package id.radityo.wallpapy.Fragments.Collections;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,15 +40,16 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CollectionsViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull final CollectionsViewHolder holder, int i) {
         final Collections collection = mCollectionList.get(i);
 
-        Glide.with(holder.itemView.getContext())
+        Glide.with(mActivity)
                 .load(collection.getCoverPhoto().getUrls().getRegular())
+                .placeholder(new ColorDrawable(Color.WHITE))
                 .error(R.drawable.ic_menu_gallery)
                 .fallback(new ColorDrawable(Color.GRAY))
                 .centerCrop()
-                .transition(DrawableTransitionOptions.withCrossFade(500))
+                .transition(DrawableTransitionOptions.withCrossFade(400))
                 .into(holder.mImageView);
 
         holder.mTvTitle.setText(collection.getTitle());
@@ -75,7 +78,8 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
                 intent.putExtra("location", collection.getAuthor().getLocation());
                 intent.putExtra("bio", collection.getAuthor().getBio());
 
-                mActivity.startActivity(intent);
+                mActivity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(mActivity,
+                        Pair.create((View) holder.mTvTitle, "titleTransition")).toBundle());
             }
         });
 

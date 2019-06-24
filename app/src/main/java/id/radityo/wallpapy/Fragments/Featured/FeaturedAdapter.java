@@ -1,11 +1,13 @@
 package id.radityo.wallpapy.Fragments.Featured;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +40,13 @@ public class FeaturedAdapter extends RecyclerView.Adapter<FeaturedAdapter.Featur
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FeaturedViewHolder vh, int i) {
+    public void onBindViewHolder(@NonNull final FeaturedViewHolder vh, int i) {
         final Featured featured = mRandomList.get(i);
 
-        Glide.with(vh.itemView.getContext())
+        Glide.with(mActivity)
                 .load(featured.getUrls().getRegular())
                 .error(R.drawable.ic_menu_gallery)
+                .placeholder(new ColorDrawable(Color.WHITE))
                 .fallback(new ColorDrawable(Color.GRAY))
                 .centerCrop()
                 .transition(DrawableTransitionOptions.withCrossFade())
@@ -60,7 +63,8 @@ public class FeaturedAdapter extends RecyclerView.Adapter<FeaturedAdapter.Featur
                 intent.putExtra("url_regular", featured.getUrls().getRegular());
                 intent.putExtra("id", featured.getId());
                 intent.putExtra("color", featured.getColor());
-                mActivity.startActivity(intent);
+                mActivity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(mActivity,
+                        Pair.create((View) vh.mImageView, "imageTransition")).toBundle());
             }
         });
     }

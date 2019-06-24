@@ -1,11 +1,13 @@
 package id.radityo.wallpapy.Activities.Search;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +40,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull final UserViewHolder holder, int i) {
         final User user = mUserList.get(i);
 
         Glide.with(mActivity)
@@ -63,7 +65,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 intent.putExtra("profile_image_large", user.getProfileImage().getLarge());
                 intent.putExtra("location", user.getLocation());
                 intent.putExtra("bio", user.getBio());
-                mActivity.startActivity(intent);
+                mActivity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(mActivity,
+                        Pair.create((View) holder.mImageView, "imageTransition")).toBundle());
             }
         });
     }

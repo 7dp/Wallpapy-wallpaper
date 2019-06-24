@@ -1,9 +1,12 @@
 package id.radityo.wallpapy.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -17,9 +20,14 @@ import id.radityo.wallpapy.R;
 import id.radityo.wallpapy.Utils.StatePagerAdapter;
 import io.fabric.sdk.android.Fabric;
 
+import static id.radityo.wallpapy.Utils.Cons.BROADCAST_COLLECTION;
+import static id.radityo.wallpapy.Utils.Cons.BROADCAST_FEATURED;
+import static id.radityo.wallpapy.Utils.Cons.BROADCAST_NEW;
+
 public class MainActivity extends AppCompatActivity {
     NavigationTabBar mNavigationBar;
     ViewPager mViewPager;
+    FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager = findViewById(R.id.view_pager_main);
         mNavigationBar = findViewById(R.id.nav_tab_bar);
+        mFab = findViewById(R.id.fab_main);
 
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
@@ -42,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(pagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
 
+        scrollToTop(BROADCAST_NEW);
+
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -54,14 +65,17 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         ab.setTitle(getString(R.string.newf));
                         mNavigationBar.show();
+                        scrollToTop(BROADCAST_NEW);
                         break;
                     case 1:
                         ab.setTitle(getString(R.string.featuredf));
                         mNavigationBar.show();
+                        scrollToTop(BROADCAST_FEATURED);
                         break;
                     case 2:
                         ab.setTitle(getString(R.string.collectionsf));
                         mNavigationBar.show();
+                        scrollToTop(BROADCAST_COLLECTION);
                         break;
                 }
             }
@@ -117,5 +131,16 @@ public class MainActivity extends AppCompatActivity {
                 mViewPager.setCurrentItem(0);
                 break;
         }
+    }
+
+    private void scrollToTop(final String action) {
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNavigationBar.show();
+                Intent intent = new Intent(action);
+                sendBroadcast(intent);
+            }
+        });
     }
 }

@@ -11,4 +11,9 @@ public class Cons {
     public static final String ALL = "all";
     public static final String CURATED = "curated";
     public static final String FEATURED = "featured";
+    public static final String DOWNLOAD_PATH = "/Pictures/Wallpapy/";
+    public static final String BROADCAST_NEW = "scroll_new";
+    public static final String BROADCAST_FEATURED = "scroll_featured";
+    public static final String BROADCAST_COLLECTION = "scroll_collection";
+    public static final String TAG = "wallpapy";
 }

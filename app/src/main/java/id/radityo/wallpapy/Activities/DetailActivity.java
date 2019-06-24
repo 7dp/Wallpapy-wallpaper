@@ -59,6 +59,7 @@ import id.radityo.wallpapy.Activities.DetailAuthor.DetailAuthorActivity;
 import id.radityo.wallpapy.R;
 import id.radityo.wallpapy.Request.APIService;
 import id.radityo.wallpapy.Request.ApiClient;
+import id.radityo.wallpapy.Utils.Cons;
 import id.radityo.wallpapy.Utils.FullScreenDialog;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -223,19 +224,17 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private long beginDownload(Uri uri, String title) {
         // create directory
-        File directory = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES).toString() + File.separator + getString(R.string.app_name));
+        File directory = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + getString(R.string.app_name));
         if (!directory.exists()) directory.mkdirs();
 
         DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setTitle(title);
-        request.setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_PICTURES + "/" + getString(R.string.app_name), title.concat(".jpg"));
+        request.setDestinationInExternalPublicDir(Cons.DOWNLOAD_PATH, title.concat(".jpg"));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
         long downloadReference = downloadManager.enqueue(request);
-        Log.e(TAG, "download reference: " + downloadReference);
 
         Toast.makeText(DetailActivity.this, "Download started!", Toast.LENGTH_LONG).show();
         return downloadReference;
@@ -284,6 +283,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         Glide.with(DetailActivity.this)
                 .load(urlRegular)
                 .thumbnail(0.5F)
+                .placeholder(new ColorDrawable(Color.WHITE))
                 .error(R.drawable.ic_menu_gallery)
                 .fallback(new ColorDrawable(Color.GRAY))
                 .transition(DrawableTransitionOptions.withCrossFade())
@@ -297,7 +297,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
                         Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
                         byte[] bytes = baos.toByteArray();
 
                         bundle.putByteArray("image", bytes);
