@@ -32,9 +32,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    dataBinding {
-        enabled = true
-    }
 }
 
 dependencies {
@@ -51,7 +48,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'com.nineoldandroids:library:2.4.0'
-    implementation 'com.daimajia.slider:library:1.1.5'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
     implementation 'com.github.clans:fab:1.6.4'
@@ -59,8 +55,7 @@ dependencies {
     implementation 'devlight.io:navigationtabbar:1.2.5'
     implementation 'jp.wasabeef:blurry:3.0.0'
     implementation 'com.github.AppIntro:AppIntro:4.2.3'
-    implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
-    implementation 'com.matthew-tamlin:sliding-intro-screen:3.2.0'
+    implementation 'com.android.support:multidex:1.0.3'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

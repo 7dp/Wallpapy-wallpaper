@@ -5,12 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import id.radityo.wallpapy.R;
 
 import static id.radityo.wallpapy.Activities.MyIntroActivity.FIRST_LAUNCH_KEY;
-import static id.radityo.wallpapy.Utils.Cons.TAG;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -29,7 +27,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.e(TAG, "run: firstLaunch");
                             Intent intent = new Intent(SplashScreenActivity.this, MyIntroActivity.class);
                             startActivity(intent);
                             finish();
@@ -39,7 +36,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.e(TAG, "run: secondLaunch");
                             Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();

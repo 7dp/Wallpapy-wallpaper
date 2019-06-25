@@ -69,7 +69,6 @@ public class TabUserLikes extends Fragment {
         View view = inflater.inflate(R.layout.tab_photos, container, false);
 
         mUsername = mActivity.getUsername();
-        Log.e(TAG, "username ocv: " + mUsername);
 
         initView(view);
 

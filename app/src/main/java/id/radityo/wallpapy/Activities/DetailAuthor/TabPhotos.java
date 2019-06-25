@@ -101,7 +101,6 @@ public class TabPhotos extends Fragment {
         initRecyclerView(container);
 
         mUsername = mActivity.getUsername();
-        Log.e(TAG, "username ocv: " + mUsername);
 
         requestUserPhotos(container, CLIENT_ID, mUsername, 1);
 

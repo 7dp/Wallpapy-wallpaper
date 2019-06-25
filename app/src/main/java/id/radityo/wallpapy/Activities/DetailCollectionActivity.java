@@ -175,18 +175,6 @@ public class DetailCollectionActivity extends AppCompatActivity {
 
         obtainDataFromIntent();
 
-        Log.e(TAG, "mCollectionId: " + mCollectionId);
-        Log.e(TAG, "collectionTitle: " + mCollectionTitle);
-        Log.e(TAG, "mAuthorName: " + mAuthorName);
-        Log.e(TAG, "mAuthorMedium: " + mAuthorMedium);
-        Log.e(TAG, "mCollectionTitle: " + mCollectionTitle);
-        Log.e(TAG, "mUserId: " + mUserId);
-        Log.e(TAG, "mUsername: " + mUsername);
-        Log.e(TAG, "profile_medium: " + mProfileSmall);
-        Log.e(TAG, "mProfileLarge: " + mProfileLarge);
-        Log.e(TAG, "mUserLocation: " + mUserLocation);
-        Log.e(TAG, "mBio: " + mBio);
-
         initView();
 
         initToolbar();

@@ -70,7 +70,6 @@ public class TabCollections extends Fragment {
         View view = inflater.inflate(R.layout.tab_photos, container, false);
 
         String username = mActivity.getUsername();
-        Log.e(TAG, "username ocv: " + username);
 
         initView(view);
 

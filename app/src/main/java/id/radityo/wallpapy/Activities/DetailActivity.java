@@ -183,7 +183,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         mImageId = getIntent().getStringExtra("id");
         mColor = getIntent().getStringExtra("color");
-        Log.e(TAG, "imageId: " + mImageId);
 
         initViewById();
 
@@ -214,11 +213,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onReceive(Context context, Intent intent) {
             long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            Log.e(TAG, "id: " + id);
-
-            if (id == mDownloadId) {
+            if (id == mDownloadId)
                 Toast.makeText(DetailActivity.this, "Download complete!", Toast.LENGTH_LONG).show();
-            }
         }
     };
 
@@ -277,7 +273,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private void showPhoto() {
         String urlRegular = getIntent().getStringExtra("url_regular");
-        Log.e(TAG, "url: " + urlRegular);
         final Bundle bundle = new Bundle();
 
         Glide.with(DetailActivity.this)
@@ -437,11 +432,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                         SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.US);
                         Date date = parser.parse(createdAt);
 
-                        Log.e(TAG, "date: " + createdAt);
-                        Log.e(TAG, "name: " + mName);
-                        Log.e(TAG, "res: " + mWidth + " " + mHeight);
-                        Log.e(TAG, "color: " + color);
-
                         mTvDate.setText(formatter.format(date));
                         mTvAuthor.setText(getString(R.string.by).concat(" ").concat(mName));
                         mTvResolution.setText(beautyFormatter(mWidth).concat(" x ").concat(beautyFormatter(mHeight)));
@@ -591,14 +581,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         else
             tvViews.setText(beautyFormatter(mViews).concat(" ".concat(getString(R.string.non_single_view))));
 
-        Log.e(TAG, "make: " + mMake);
-        Log.e(TAG, "model: " + mModel);
-        Log.e(TAG, "exposure_time: " + mExposureTime);
-        Log.e(TAG, "aperture: " + mAperture);
-        Log.e(TAG, "focal_length: " + mFocalLength);
-        Log.e(TAG, "iso: " + mIso);
-        Log.e(TAG, "w x h: " + mWidth + " x " + mHeight);
-
         builder.setView(dView);
         AlertDialog alertDialog = builder.create();
         alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -628,7 +610,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                             @Nullable Transition<? super Bitmap> transition) {
 
                         mUri = getBitmapUri(DetailActivity.this, resource);
-                        Log.e(TAG, "bitmap: " + resource);
                         setWallpaper(mUri, mProgressDialog);
                     }
 
@@ -655,8 +636,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
 
-                Log.e(TAG, "onRequestPermissionsResult: GRANTED");
-
                 switch (mPermission) {
                     case 1:
                         mFabMenu.close(true);
@@ -681,10 +660,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 }
             } else {
                 showMessage();
-                Log.e(TAG, "onRequestPermissionsResult: DENIED");
             }
         } else {
-            Log.e(TAG, "onRequestPermissionsResult: ");
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }

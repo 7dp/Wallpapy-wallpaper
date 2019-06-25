@@ -30,9 +30,8 @@
         <item name="android:textColorSecondary">@android:color/black</item>
     </style>
 
-    <style name="AppThemeNoBar.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="Theme.Intro" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="ProgressBar" parent="AppThemeNoBar">

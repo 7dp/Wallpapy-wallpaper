@@ -46,7 +46,6 @@ import static id.radityo.wallpapy.Utils.Cons.CLIENT_ID;
 
 public class TabSearchPhotos extends Fragment {
     private RecyclerView mRecyclerView;
-    LinearLayout mLayoutNetwork;
     private LinearLayout mLinearSearch;
     private SwipeRefreshLayout mSwipeRefresh;
     private ProgressBar mProgressBar;
@@ -60,12 +59,10 @@ public class TabSearchPhotos extends Fragment {
 
     private void initView(View view) {
         mRecyclerView = view.findViewById(R.id.recycler_tab_photos);
-//        mLayoutNetwork = view.findViewById(R.id.search_layout_tab_photos);
         mSwipeRefresh = view.findViewById(R.id.refresh_tab_photos);
         mProgressBar = view.findViewById(R.id.progress_tab_photos);
         mLinearSearch = view.findViewById(R.id.search_layout_tab_photos);
 
-//        mLayoutNetwork.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
         mLinearSearch.setVisibility(View.VISIBLE);
         mSwipeRefresh.setEnabled(false);
@@ -116,7 +113,6 @@ public class TabSearchPhotos extends Fragment {
             if (intent.getAction().equals(QUERY)) {
 
                 mQuery = intent.getStringExtra(QUERY);
-                Log.e(TAG, "### TSP | receive query: " + mQuery);
 
                 mEndlessScrollListener.resetState();
                 mNewList.clear();
