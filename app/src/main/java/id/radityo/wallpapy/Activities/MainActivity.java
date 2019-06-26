@@ -1,6 +1,7 @@
 package id.radityo.wallpapy.Activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -93,21 +94,23 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<NavigationTabBar.Model> modelList = new ArrayList<>();
         int orange = getResources().getColor(R.color.orange);
 
+        Resources res = getResources();
+
         modelList.add(new NavigationTabBar.Model.Builder(
-                getResources().getDrawable(R.drawable.ic_hot_24),
-                orange)
+                res.getDrawable(R.drawable.ic_fire_outline), orange)
+                .selectedIcon(res.getDrawable(R.drawable.ic_fire_filled))
                 .title("New")
                 .build());
 
         modelList.add(new NavigationTabBar.Model.Builder(
-                getResources().getDrawable(R.drawable.ic_star_24),
-                orange)
+                res.getDrawable(R.drawable.ic_star_outline), orange)
+                .selectedIcon(res.getDrawable(R.drawable.ic_star_filled))
                 .title("Featured")
                 .build());
 
         modelList.add(new NavigationTabBar.Model.Builder(
-                getResources().getDrawable(R.drawable.ic_category_24),
-                orange)
+                res.getDrawable(R.drawable.ic_dashboard_outline), orange)
+                .selectedIcon(res.getDrawable(R.drawable.ic_dashboard_filled))
                 .title("Collections")
                 .build());
 
